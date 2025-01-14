@@ -1,6 +1,6 @@
-import { Create } from "../_components/create";
-import { Delete } from "../_components/delete";
-import { Edit } from "../_components/edit";
+import { Create } from "./_components/create";
+import { Delete } from "./_components/delete";
+import { Edit } from "./_components/edit";
 export type category = {
   _id: number;
   name: string;

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { category } from "../test/page";
+import { category } from "../page";
 
 type Prop = {
   data: category[];
@@ -49,13 +49,15 @@ export const Delete = (props: Prop) => {
               className=" border-black"
               onClick={() => {
                 handRequest(category._id);
-              }}>
+              }}
+            >
               {index + 1}.{"  " + category.name}
             </button>
             <button
               onClick={() => {
                 handleRequest2(category._id);
-              }}>
+              }}
+            >
               edit
             </button>
             <input
