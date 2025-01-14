@@ -15,13 +15,6 @@ export const Delete = (props: Prop) => {
   const handRequest = async (id: number) => {
     const res = await fetch(`http://localhost:5000/delete/${id}`, {
       method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id,
-      }),
     });
     const response = await res.json();
     console.log(response);
@@ -37,8 +30,7 @@ export const Delete = (props: Prop) => {
               handRequest(category._id);
             }}
           >
-            {index + 1}
-            {"  " + category.categoryName}
+            {index + 1}.{"  " + category.categoryName}
           </button>
         ))}
     </div>
