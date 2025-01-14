@@ -1,18 +1,19 @@
-import { Create } from "./_components/create";
-import { Delete } from "./_components/delete";
-export type category = {
-  _id: number;
-  categoryName: string;
-};
-export default async function Home() {
-  const res = await fetch(`http://localhost:5000`);
-  const data = await res.json();
-  console.log(data);
+import Image from "next/image";
 
+export default function App() {
   return (
-    <div>
-      <Create />
-      <Delete data={data} />
+    <div className="flex bg-secondary">
+      <div className="w-[205px] min-h-screen bg-background ">
+        <div className="logo flex content-center p-7 gap-3">
+          <div className="content-center">
+            <Image alt="logo" src={`/img/logo.svg`} width={36} height={29} />
+          </div>
+          <div className="content-center">
+            <div className="text-foreground">NomNom</div>
+            <div className="text-muted-foreground">Swift devivery</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
