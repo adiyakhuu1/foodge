@@ -21,7 +21,7 @@ export default async function App(props: {
   if (!page) {
     return (
       <Link href={`?page=food menu`}>
-        <div>Wrong</div>
+        <div>???????</div>
       </Link>
     );
   }
@@ -31,9 +31,11 @@ export default async function App(props: {
         <ModeToggle />
       </div>
       <AdminMainMenu page={page} />
-      {page === `food menu` && <Tabs page={page} />}
-      {page === `orders` && <Tabs page={page} />}
-      {page === `settings` && <Tabs page={page} />}
+      <div className="flex justify-center mt-20 ml-40">
+        {page === `food menu` && <Tabs page={page} />}
+        {page === `orders` && <Tabs page={page} />}
+        {page === `settings` && <Tabs page={page} />}
+      </div>
     </div>
   );
 }

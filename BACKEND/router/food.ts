@@ -8,6 +8,11 @@ foodRouter.get("/", async (req: Request, res: Response) => {
   const result = await food_model.find();
   res.json(result);
 });
+foodRouter.get("/:category", async (req: Request, res: Response) => {
+  const params = req.params;
+  const result = await food_model.find(params);
+  res.json(result);
+});
 
 foodRouter.post("/", async (req: Request, res: Response) => {
   const body = req.body;

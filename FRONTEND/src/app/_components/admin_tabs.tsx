@@ -62,9 +62,9 @@ const TableCard = () => {
 type Props = {
   page: string;
 };
-type Dish = {
+export type Dish = {
   name: string;
-  _id: number;
+  _id: string;
 };
 export type Food = {
   _id: string;
@@ -80,9 +80,10 @@ export default async function Tabs(props: Props) {
   const { page } = props;
   const res = await fetch(`http://localhost:5000/FoodCategory`);
   const FoodCategory = await res.json();
-  const res2 = await fetch(`http://localhost:5000/Food`, { method: "GET" });
-  const Foods = await res2.json();
-  console.log(Foods);
+
+  // const resPizza = await fetch(`http://localhost:5000/Food/${}`);
+  // const response = await resPizza.json();
+
   if (page === `orders`) {
     return (
       <>
@@ -138,7 +139,7 @@ export default async function Tabs(props: Props) {
     );
   } else if (page === `food menu`) {
     return (
-      <div className="flex flex-col gap-10 w-[70%] fixed right-48 top-40">
+      <div className="flex flex-col gap-10 w-[70%] right-40">
         <div className="w-full ">
           <div className="w-full h-44 bg-background">
             <div className="text-xl p-5 font-bold">Dishes Category</div>
@@ -147,24 +148,25 @@ export default async function Tabs(props: Props) {
                 FoodCategory.map((category: Dish) => (
                   <button
                     key={category._id}
-                    className="border border-border rounded-full py-1 px-3 font-bold text-sm"
-                  >
+                    className="border border-border rounded-full py-1 px-3 font-bold text-sm">
                     {category.name}
                   </button>
                 ))}
             </div>
           </div>
         </div>
-        <div className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 ">
-          <div className="text-foreground text-xl font-extrabold">
-            Appetizer
+        {FoodCategory.map((category: Dish) => (
+          <div
+            key={category._id}
+            className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 ">
+            <div className="text-foreground text-xl font-extrabold">
+              {category.name}
+            </div>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Card categoryName={category.name} categoryId={category._id} />
+            </div>
           </div>
-          <div className="flex flex-wrap gap-4 justify-center">
-            {Foods.map((food: Food) => (
-              <Card food={food} />
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
     );
   }

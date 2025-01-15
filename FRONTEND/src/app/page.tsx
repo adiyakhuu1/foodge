@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function App() {
   return (
-    <Link href={`/admin?id=1223`}>
+    <Link href={`/admin?page=food order`}>
       <div>Admin</div>
     </Link>
   );
