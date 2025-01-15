@@ -9,11 +9,11 @@ FoodCategoryRouter.get("/", async (req: Request, res: Response) => {
 });
 FoodCategoryRouter.post("/addnew", async (req: Request, res: Response) => {
   // const body = req.body;?
-  const newCategory = foodCategory_model.create(req.body, {
+  const newCategory = await foodCategory_model.create(req.body, {
     timeStamp: true,
   });
   const result = await foodCategory_model.find();
-  res.json(result);
+  res.json(newCategory);
 });
 
 FoodCategoryRouter.delete("/:id", async (req: Request, res: Response) => {

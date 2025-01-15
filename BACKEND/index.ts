@@ -6,6 +6,7 @@ const cors = require("cors");
 const port = 5000;
 import mongoose, { mongo } from "mongoose";
 import { FoodCategoryRouter } from "./router/food-category";
+import { foodRouter } from "./router/food";
 configDotenv();
 const URI = process.env.NEXT_PUBLIC_DB_PASSWORD;
 const app = express();
@@ -33,17 +34,6 @@ const foodCategory = new mongoose.Schema(
   }
 );
 
-// Food - Schema
-const food = new mongoose.Schema(
-  {
-    foodName: String,
-    price: Number,
-    image: String,
-    ingredients: String,
-    // category: ObjectId
-  },
-  { timestamps: true }
-);
 // User - Schema
 const user = new mongoose.Schema(
   {
@@ -77,6 +67,7 @@ const FoodOrderItem = new mongoose.Schema({
 });
 
 app.use("/FoodCategory", FoodCategoryRouter);
+app.use("/food", foodRouter);
 
 /// irrelevant
 // app.post("/createModel", async (req: Request, res: Response) => {
