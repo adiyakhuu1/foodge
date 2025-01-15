@@ -90,3 +90,7 @@ app.listen(port, () => {
   console.log(`http://localhost:${port}`);
   console.log(URI);
 });
+
+// CLOUDINARY_CLOUD_NAME
+// CLOUDINARY_API_KEY
+// CLOUDINARY_API_SECRET

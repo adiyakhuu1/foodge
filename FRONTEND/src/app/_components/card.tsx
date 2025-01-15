@@ -2,17 +2,17 @@
 
 import Image from "next/image";
 import { Dish, Food } from "./admin_tabs";
-import { Dialog, DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
-import { Textarea } from "@nextui-org/input";
 import {
+  Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import {
   DropdownMenuContent,
   DropdownMenuItem,
@@ -35,14 +35,19 @@ type Props = {
   categoryName: string;
 };
 export default function Card({ categoryId, categoryName }: Props) {
+  // add states
   const [foods, setFoods] = useState<Food[]>([]);
   const [foodName, setFoodName] = useState<string>("");
   const [ingredients, setIngre] = useState<string>("");
   const [chooseCate, setCategory] = useState<string>("");
   const [categories, setAllCategory] = useState<Dish[]>([]);
-  const [getCat, setGetCategory] = useState<string>("");
-  const [price, setPrice] = useState<number>(0);
 
+  const [price, setPrice] = useState<number>(0);
+  // edit states
+  const [getFoodId, setFoodId] = useState<string>("");
+  const [changeCategory, setEditCategory] = useState("");
+
+  const [ref, refresh] = useState(0);
   useEffect(() => {
     const fetchData = async () => {
       const recCate = await fetch(`http://localhost:5000/food/${categoryId}`, {
@@ -52,7 +57,7 @@ export default function Card({ categoryId, categoryName }: Props) {
       setFoods(categorizedFoods);
     };
     fetchData();
-  }, []);
+  }, [ref]);
   useEffect(() => {
     const fetchData = async () => {
       const recCate = await fetch(`http://localhost:5000/foodCategory`, {
@@ -62,7 +67,7 @@ export default function Card({ categoryId, categoryName }: Props) {
       setAllCategory(categories);
     };
     fetchData();
-  }, []);
+  }, [ref]);
 
   const addnewitem = async () => {
     const recCate = await fetch(`http://localhost:5000/food`, {
@@ -80,7 +85,26 @@ export default function Card({ categoryId, categoryName }: Props) {
     });
     const response = recCate.json();
     console.log(response);
+    refresh(ref + 1);
   };
+  const edititem = async () => {
+    const recCate = await fetch(`http://localhost:5000/food/${getFoodId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        foodName,
+        price,
+        ingredients,
+        category: changeCategory,
+      }),
+    });
+    const response = recCate.json();
+    console.log(response);
+    refresh(ref + 1);
+  };
+
   // console.log(pizza);
   return (
     <>
@@ -89,7 +113,8 @@ export default function Card({ categoryId, categoryName }: Props) {
           onClick={() => {
             setCategory(categoryId);
           }}
-          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center">
+          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
+        >
           <div>
             <Image
               src={`/img/add-new-button.png`}
@@ -144,15 +169,14 @@ export default function Card({ categoryId, categoryName }: Props) {
             </div>
           </div>
           <DialogFooter>
-            <Link href={`/admin?page=food order`}>
-              <button
-                onClick={() => {
-                  addnewitem();
-                }}
-                type="submit"
-                className="bg-foreground px-5 p-2 text-secondary">
-                Save
-              </button>
+            <Link
+              onClick={() => {
+                addnewitem();
+              }}
+              href={`/admin?page=food menu`}
+              className="bg-foreground px-5 p-2 text-secondary"
+            >
+              <div>Save</div>
             </Link>
           </DialogFooter>
         </DialogContent>
@@ -161,23 +185,29 @@ export default function Card({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl">
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl"
+        >
           {/* here */}
           <Dialog>
             <DialogTrigger
               onClick={() => {
-                setCategory(categoryId);
+                setFoodId(food._id);
+                setEditCategory(food.category);
+                setFoodName(food.foodName);
+                setIngre(food.ingredients);
+                setPrice(food.price);
               }}
-              className="">
-              <button>
+              className=""
+            >
+              <div>
                 <Image
-                  className="absolute top-1/2 right-3 border border-border rounded-full shadow-lg"
+                  className="absolute top-1/3 right-4 border border-border rounded-full shadow-lg"
                   src={`/img/edit-button.svg`}
                   width={44}
                   height={44}
                   alt="edit button"
                 />
-              </button>
+              </div>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -191,53 +221,59 @@ export default function Card({ categoryId, categoryName }: Props) {
                     <Input
                       onChange={(e) => {
                         setFoodName(e.target.value);
+                        console.log(foodName);
                       }}
+                      defaultValue={foodName}
                       placeholder="Enter the food name"
-                      className="border border-border rounded-md p-2 w-[288px]"
+                      className="border border-border rounded-md p-2 w-[288px] text-foreground bg-background"
                     />
                   </div>
                   <div className="flex justify-between items-center">
                     <label>Select a category</label>
-                    <Select>
-                      <SelectTrigger className="w-[280px]">
-                        <SelectValue placeholder="selec" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Select a category</SelectLabel>
-                          {categories.map((cate) => (
-                            <SelectItem value={`${cate.name}`}>
-                              <button
-                                onClick={() => {
-                                  setGetCategory(cate._id);
-                                  console.log(getCat);
-                                }}>
-                                {cate.name}
-                              </button>
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                    <select
+                      required
+                      defaultValue={changeCategory}
+                      className="border border-border w-[288px] px-4 py-1 rounded-md text-foreground bg-background"
+                      onChange={(e) => {
+                        setEditCategory(e.target.value);
+                        console.log(changeCategory);
+                      }}
+                    >
+                      {categories.map((cate) => (
+                        <option
+                          // onClick={() => {
+                          //   setEditCategory(cate._id);
+                          //   console.log(changeCategory);
+                          // }}
+                          key={cate._id}
+                          value={`${cate._id}`}
+                          className="text-foreground bg-background"
+                        >
+                          {cate.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="flex flex-col">
                     <textarea
+                      defaultValue={ingredients}
                       onChange={(e) => {
                         setIngre(e.target.value);
                       }}
                       placeholder="List of ingredients"
-                      className="border border-border h-20"
+                      className="border border-border h-20 text-foreground bg-background"
                     />
                   </div>
                   <div className="flex justify-between ">
                     <h2>Dish Price</h2>
                     <input
+                      defaultValue={price}
                       onChange={(e) => {
                         setPrice(Number(e.target.value));
                       }}
                       type="number"
                       placeholder="Enter the price"
-                      className="border border-border rounded-md p-2 w-[288px]"
+                      className="border border-border rounded-md p-2 w-[288px] text-foreground bg-background"
                     />
                   </div>
                 </div>
@@ -248,20 +284,24 @@ export default function Card({ categoryId, categoryName }: Props) {
                 </div>
               </div>
               <DialogFooter>
-                <Link href={`/admin?page=food order`}>
-                  <button
-                    type="submit"
-                    className="bg-foreground px-5 p-2 text-secondary">
+                <DialogClose>
+                  <Link
+                    onClick={() => {
+                      edititem();
+                    }}
+                    href={`/admin?page=food menu`}
+                    className="bg-foreground px-5 p-2 text-secondary"
+                  >
                     Save
-                  </button>
-                </Link>
+                  </Link>
+                </DialogClose>
               </DialogFooter>
             </DialogContent>
           </Dialog>
 
           {/* here ending */}
           <Image
-            className="w-[238px] h-[129px] bg-cover"
+            className="w-[238px] h-[129px] bg-cover rounded-xl"
             src={`https://www.foodandwine.com/thmb/bT5-sIRTEMDImFAqBmEAzG5T5A4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/classic-cheese-pizza-FT-RECIPE0422-31a2c938fc2546c9a07b7011658cfd05.jpg`}
             object-fit="cover"
             priority={false}
