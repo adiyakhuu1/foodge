@@ -1,6 +1,8 @@
 import express, { Response, Request } from "express";
 import { Router } from "express";
 import { food_model } from "../models/models";
+import { exists } from "fs";
+import { error } from "console";
 
 export const foodRouter = Router();
 
@@ -28,7 +30,7 @@ foodRouter.put("/:_id", async (req: Request, res: Response) => {
   try {
     await food_model.findByIdAndUpdate(params, body);
     console.log(params);
-    res.send("amjilttai");
+    res.json(params);
   } catch (err) {
     console.log(err, "aldaa zaalaa");
   }
@@ -42,4 +44,21 @@ foodRouter.post("/", async (req: Request, res: Response) => {
   const newitem = await food_model.create(body);
   //   console.log(newItem);
   res.json(newitem);
+});
+foodRouter.put("/testing/replaceall", async (req: Request, res: Response) => {
+  try {
+    const result = await food_model.updateMany(
+      { image: { $exists: true } },
+      { image: "" }
+    );
+    res.json({
+      message: "success",
+      result,
+    });
+  } catch (e) {
+    console.error(e, "error");
+    res.status(500).json({
+      message: "error 500",
+    });
+  }
 });

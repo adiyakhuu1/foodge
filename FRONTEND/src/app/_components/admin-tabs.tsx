@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import AdminMainMenu from "./admin_main_menu";
+import AdminMainMenu from "./admin-main_menu";
 import Image from "next/image";
 import Card from "./admin-food-card";
 import { Badge } from "@/components/ui/badge";
@@ -153,7 +153,8 @@ export default async function Tabs(props: Props) {
                 FoodCategory.map((category: Dish) => (
                   <Link
                     key={category._id}
-                    href={`/admin?page=food menu&category=${category._id}`}>
+                    href={`/admin?page=food menu&category=${category._id}`}
+                  >
                     <Badge className="border border-border rounded-full py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background">
                       {category.name}
                     </Badge>
@@ -166,7 +167,8 @@ export default async function Tabs(props: Props) {
           FoodCategory.map((categor: Dish) => (
             <div
               key={categor._id}
-              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 ">
+              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 "
+            >
               <div className="text-foreground text-xl font-extrabold">
                 {categor.name}
               </div>
@@ -181,7 +183,8 @@ export default async function Tabs(props: Props) {
               return (
                 <div
                   key={categor._id}
-                  className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 ">
+                  className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 "
+                >
                   <div className="text-foreground text-xl font-extrabold">
                     {categor.name}
                   </div>

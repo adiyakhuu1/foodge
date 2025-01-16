@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Dish, Food } from "./admin_tabs";
+import { Dish, Food } from "./admin-tabs";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { MdArrowForwardIos } from "react-icons/md";
 import Card from "./admin-food-card";

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Dish, Food } from "./admin_tabs";
+import { Dish, Food } from "./admin-tabs";
 import {
   Dialog,
   DialogClose,
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { MdDeleteForever } from "react-icons/md";
+import { configDotenv } from "dotenv";
 import {
   Select,
   SelectContent,
@@ -35,6 +36,7 @@ type Props = {
   categoryId: string;
   categoryName: string;
 };
+configDotenv();
 export default function AdminCard({ categoryId, categoryName }: Props) {
   // add states
   const [foods, setFoods] = useState<Food[]>([]);
@@ -50,6 +52,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   const [changeCategory, setEditCategory] = useState("");
 
   const [ref, refresh] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       const recCate = await fetch(`http://localhost:5000/food/${categoryId}`, {
@@ -122,7 +125,6 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const img = e.target.files[0];
-
       const data = new FormData();
 
       data.append("file", img);
@@ -136,7 +138,6 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
         }
       );
       const response = await res.json();
-      // console.log(response);
       setImage(response.secure_url);
       console.log(image);
     }
@@ -153,7 +154,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
             setPrice(1);
             setImage("");
           }}
-          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center">
+          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
+        >
           <div>
             <Image
               src={`/img/add-new-button.png`}
@@ -216,9 +218,11 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               <Link
                 onClick={() => {
                   addnewitem();
+                  console.log(image);
                 }}
                 href={`/admin?page=food menu`}
-                className="bg-foreground px-5 p-2 text-secondary">
+                className="bg-foreground px-5 p-2 text-secondary"
+              >
                 <div>Save</div>
               </Link>
             </DialogClose>
@@ -229,7 +233,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl">
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl"
+        >
           {/* edit dialog here */}
           <Dialog>
             <DialogTrigger
@@ -241,10 +246,11 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                 setPrice(food.price);
                 setImage(food.image);
               }}
-              className="">
+              className=""
+            >
               <div>
                 <Image
-                  className="absolute top-1/3 right-4 border border-border rounded-full shadow-lg"
+                  className="absolute top-1/2 right-4 border border-border rounded-full shadow-lg"
                   src={`/img/edit-button.svg`}
                   width={44}
                   height={44}
@@ -280,7 +286,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       onChange={(e) => {
                         setEditCategory(e.target.value);
                         console.log(changeCategory);
-                      }}>
+                      }}
+                    >
                       {categories.map((cate) => (
                         <option
                           // onClick={() => {
@@ -289,7 +296,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                           // }}
                           key={cate._id}
                           value={`${cate._id}`}
-                          className="text-foreground bg-background">
+                          className="text-foreground bg-background"
+                        >
                           {cate.name}
                         </option>
                       ))}
@@ -321,7 +329,11 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
 
                 <div className="flex flex-col">
                   <label>Food image</label>
-                  <input type="file" className="h-40 border border-border" />
+                  <input
+                    type="file"
+                    className="h-40 border border-border"
+                    onChange={(e) => handleImage(e)}
+                  />
                 </div>
               </div>
               <div className="flex justify-between">
@@ -331,7 +343,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       deleteFood();
                     }}
                     href={`/admin?page=food menu`}
-                    className=" px-5 p-2 text-foreground">
+                    className=" px-5 p-2 text-foreground"
+                  >
                     <MdDeleteForever className="text-red-600 text-3xl" />
                   </Link>
                 </DialogFooter>
@@ -342,7 +355,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                         edititem();
                       }}
                       href={`/admin?page=food menu`}
-                      className="bg-foreground px-5 p-2 text-secondary">
+                      className="bg-foreground px-5 p-2 text-secondary"
+                    >
                       Save
                     </Link>
                   </DialogClose>
@@ -353,12 +367,16 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
 
           {/* here ending */}
           <Image
-            className="w-[238px] h-[129px] bg-cover rounded-xl"
-            src={food.image}
-            object-fit="cover"
-            priority={false}
+            className="w-[238px] h-[159px] overflow-hidden rounded-xl"
+            src={
+              food.image
+                ? food.image
+                : `https://www.foodandwine.com/thmb/bT5-sIRTEMDImFAqBmEAzG5T5A4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/classic-cheese-pizza-FT-RECIPE0422-31a2c938fc2546c9a07b7011658cfd05.jpg`
+            }
+            objectFit="cover"
+            layout="fixed"
             width={238}
-            height={129}
+            height={189}
             alt="foodpic"
           />
 

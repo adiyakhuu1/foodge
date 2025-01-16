@@ -22,8 +22,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { MdDeleteForever } from "react-icons/md";
-import { TiPlus } from "react-icons/ti";
-import { GoPlus } from "react-icons/go";
 import {
   Select,
   SelectContent,
@@ -37,7 +35,7 @@ type Props = {
   categoryId: string;
   categoryName: string;
 };
-export default function UserFoodCard({ categoryId, categoryName }: Props) {
+function Card({ categoryId, categoryName }: Props) {
   // add states
   const [foods, setFoods] = useState<Food[]>([]);
   const [foodName, setFoodName] = useState<string>("");
@@ -123,7 +121,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   // console.log(pizza);
   return (
     <>
-      {/* <Dialog>
+      <Dialog>
         <DialogTrigger
           onClick={() => {
             setCategory(categoryId);
@@ -131,7 +129,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
             setIngre("");
             setPrice(1);
           }}
-          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center">
+          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
+        >
           <div>
             <Image
               src={`/img/add-new-button.png`}
@@ -146,7 +145,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
           <DialogHeader>
             <DialogTitle>Add new Dish to {categoryName}</DialogTitle>
             {/* <DialogDescription>check</DialogDescription> */}
-      {/* </DialogHeader>
+          </DialogHeader>
           <div className="flex flex-col gap-3">
             <div className="flex justify-between">
               <div>
@@ -186,24 +185,23 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
             </div>
           </div>
           <DialogFooter>
-            <DialogClose asChild>
-              <Link
-                onClick={() => {
-                  addnewitem();
-                }}
-                href={`/admin?page=food menu`}
-                className="bg-foreground px-5 p-2 text-secondary">
-                <div>Save</div>
-              </Link>
-            </DialogClose>
+            <Link
+              onClick={() => {
+                addnewitem();
+              }}
+              href={`/admin?page=food menu`}
+              className="bg-foreground px-5 p-2 text-secondary"
+            >
+              <div>Save</div>
+            </Link>
           </DialogFooter>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
 
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl"
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl"
         >
           {/* edit dialog here */}
           <Dialog>
@@ -218,22 +216,20 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
               className=""
             >
               <div>
-                {/* <Image
-                  "
+                <Image
+                  className="absolute top-1/3 right-4 border border-border rounded-full shadow-lg"
                   src={`/img/edit-button.svg`}
                   width={44}
                   height={44}
                   alt="edit button"
-                /> */}
-                <GoPlus className="absolute top-[40%] bg-background right-4 text-red-500 text-xs w-10 h-10 rounded-full shadow-lg" />
+                />
               </div>
             </DialogTrigger>
             <DialogContent>
-              <DialogTitle>soon</DialogTitle>
-              {/*  <DialogHeader>
-                
+              <DialogHeader>
+                <DialogTitle>Edit info - {categoryName}</DialogTitle>
                 {/* <DialogDescription>check</DialogDescription> */}
-              {/*</DialogHeader>
+              </DialogHeader>
               <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-4">
                   <div className="flex justify-between">
@@ -257,7 +253,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                       onChange={(e) => {
                         setEditCategory(e.target.value);
                         console.log(changeCategory);
-                      }}>
+                      }}
+                    >
                       {categories.map((cate) => (
                         <option
                           // onClick={() => {
@@ -266,7 +263,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                           // }}
                           key={cate._id}
                           value={`${cate._id}`}
-                          className="text-foreground bg-background">
+                          className="text-foreground bg-background"
+                        >
                           {cate.name}
                         </option>
                       ))}
@@ -308,23 +306,23 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                       deleteFood();
                     }}
                     href={`/admin?page=food menu`}
-                    className=" px-5 p-2 text-foreground">
+                    className=" px-5 p-2 text-foreground"
+                  >
                     <MdDeleteForever className="text-red-600 text-3xl" />
                   </Link>
                 </DialogFooter>
                 <DialogFooter className="flex justify-between">
-                  <DialogClose asChild>
-                    <Link
-                      onClick={() => {
-                        edititem();
-                      }}
-                      href={`/admin?page=food menu`}
-                      className="bg-foreground px-5 p-2 text-secondary">
-                      Save
-                    </Link>
-                  </DialogClose>
+                  <Link
+                    onClick={() => {
+                      edititem();
+                    }}
+                    href={`/admin?page=food menu`}
+                    className="bg-foreground px-5 p-2 text-secondary"
+                  >
+                    Save
+                  </Link>
                 </DialogFooter>
-              </div> */}
+              </div>
             </DialogContent>
           </Dialog>
 
@@ -338,20 +336,13 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
             height={129}
             alt="foodpic"
           />
-          <div className="px-4 pt-2 overflow-hidden flex flex-col gap-2 w-full">
-            <div>
-              <div className="flex justify-between text-sm w-full">
-                <h2 className="text-red-500 text-xl font-semibold">
-                  {food.foodName}
-                </h2>
-                <div>${food.price}</div>
-              </div>
 
-              <div className="truncate text-wrap text-sm h-20">
-                {food.ingredients}
-              </div>
-            </div>
+          <div className="flex justify-between text-sm w-full">
+            <h2 className="text-red-500">{food.foodName}</h2>
+            <div>${food.price}</div>
           </div>
+
+          <div className="truncate text-wrap text-sm">{food.ingredients}</div>
         </div>
       ))}
     </>
