@@ -8,6 +8,15 @@ foodRouter.get("/", async (req: Request, res: Response) => {
   const result = await food_model.find();
   res.json(result);
 });
+foodRouter.delete("/:_id", async (req: Request, res: Response) => {
+  const params = req.params;
+  try {
+    await food_model.findByIdAndDelete(params);
+    res.json({ message: "deleted" });
+  } catch (err) {
+    console.error("aldaa", err, "aldaa");
+  }
+});
 foodRouter.get("/:category", async (req: Request, res: Response) => {
   const params = req.params;
   const result = await food_model.find(params);
