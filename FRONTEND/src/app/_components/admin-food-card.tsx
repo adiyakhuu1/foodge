@@ -39,6 +39,13 @@ type Props = {
 configDotenv();
 export default function AdminCard({ categoryId, categoryName }: Props) {
   // add states
+  const [form, setForm] = useState({
+    foodName: "",
+    price: 1,
+    ingredients: "",
+    image: "",
+    category: "",
+  });
   const [foods, setFoods] = useState<Food[]>([]);
   const [foodName, setFoodName] = useState<string>("");
   const [ingredients, setIngre] = useState<string>("");
