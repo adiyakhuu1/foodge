@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   DropdownMenuContent,
@@ -39,17 +39,10 @@ type Props = {
 configDotenv();
 export default function AdminCard({ categoryId, categoryName }: Props) {
   // add states
-  const [form, setForm] = useState({
-    foodName: "",
-    price: 1,
-    ingredients: "",
-    image: "",
-    category: "",
-  });
+
   const [foods, setFoods] = useState<Food[]>([]);
   const [foodName, setFoodName] = useState<string>("");
   const [ingredients, setIngre] = useState<string>("");
-  const [chooseCate, setCategory] = useState<string>("");
   const [categories, setAllCategory] = useState<Dish[]>([]);
   const [image, setImage] = useState<string>("");
 
@@ -57,9 +50,24 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   // edit states
   const [getFoodId, setFoodId] = useState<string>("");
   const [changeCategory, setEditCategory] = useState("");
-
   const [ref, refresh] = useState(0);
+  const [form, setForm] = useState({
+    foodName: "",
+    price: 1,
+    ingredients: "",
+    image: image,
+    category: "",
+  });
 
+  useEffect(() => {
+    setForm({
+      foodName: "",
+      price: 1,
+      ingredients: "",
+      image: image,
+      category: "",
+    });
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       const recCate = await fetch(`http://localhost:5000/food/${categoryId}`, {
@@ -87,13 +95,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        foodName,
-        price,
-        ingredients,
-        image,
-        category: chooseCate,
-      }),
+      body: JSON.stringify(form),
     });
     const response = recCate.json();
     console.log(response);
@@ -149,17 +151,34 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       console.log(image);
     }
   };
-  // console.log(pizza);
+
+  const onChangeForm = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const value = e.target.value;
+    const field = e.target.name;
+    const newVlue = { ...form, [field]: value, image: image };
+    setForm(newVlue);
+    console.log(form);
+  };
+
+  const isValid = () => {
+    return form.foodName && form.price && form.ingredients && form.category;
+  };
   return (
     <>
       <Dialog>
         <DialogTrigger
+          name="category"
           onClick={() => {
-            setCategory(categoryId);
-            setFoodName("");
-            setIngre("");
-            setPrice(1);
             setImage("");
+            setForm({
+              foodName: "",
+              price: 1,
+              ingredients: "",
+              image: image,
+              category: categoryId,
+            });
           }}
           className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
         >
@@ -173,7 +192,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
           </div>
           <div>Add new dish to {categoryName}</div>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="">
           <DialogHeader>
             <DialogTitle>Add new Dish to {categoryName}</DialogTitle>
             {/* <DialogDescription>check</DialogDescription> */}
@@ -183,8 +202,10 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               <div>
                 <h2>Food Name</h2>
                 <input
+                  name="foodName"
                   onChange={(e) => {
                     setFoodName(e.target.value);
+                    onChangeForm(e);
                   }}
                   placeholder="Enter the food name"
                   className="border  border-border rounded-md p-2"
@@ -193,8 +214,10 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               <div>
                 <h2>Food Price</h2>
                 <input
+                  name="price"
                   onChange={(e) => {
                     setPrice(Number(e.target.value));
+                    onChangeForm(e);
                   }}
                   type="number"
                   placeholder="Enter the price"
@@ -204,8 +227,10 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
             </div>
             <div className="flex flex-col">
               <textarea
+                name="ingredients"
                 onChange={(e) => {
                   setIngre(e.target.value);
+                  onChangeForm(e);
                 }}
                 placeholder="List of ingredients"
                 className="border border-border h-20"
@@ -214,23 +239,39 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
             <div className="flex flex-col">
               <label>Food image</label>
               <input
+                name="image"
                 type="file"
                 className="h-40 border border-border"
-                onChange={handleImage}
+                onChange={(e) => {
+                  handleImage(e);
+                }}
               />
             </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
               <Link
-                onClick={() => {
-                  addnewitem();
-                  console.log(image);
+                onClick={(e) => {
+                  if (!isValid()) {
+                    e.preventDefault();
+                  } else {
+                    addnewitem();
+                    console.log(image);
+                  }
                 }}
                 href={`/admin?page=food menu`}
-                className="bg-foreground px-5 p-2 text-secondary"
+                className={` ${
+                  !isValid() ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
-                <div>Save</div>
+                <button
+                  disabled={!isValid()}
+                  className={` bg-foreground px-5 p-2 text-secondary rounded-lg ${
+                    !isValid() ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  Save
+                </button>
               </Link>
             </DialogClose>
           </DialogFooter>
