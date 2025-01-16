@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { MdDeleteForever } from "react-icons/md";
 import {
   Select,
   SelectContent,
@@ -42,7 +43,7 @@ export default function Card({ categoryId, categoryName }: Props) {
   const [chooseCate, setCategory] = useState<string>("");
   const [categories, setAllCategory] = useState<Dish[]>([]);
 
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState<number>(1);
   // edit states
   const [getFoodId, setFoodId] = useState<string>("");
   const [changeCategory, setEditCategory] = useState("");
@@ -87,6 +88,18 @@ export default function Card({ categoryId, categoryName }: Props) {
     console.log(response);
     refresh(ref + 1);
   };
+
+  const deleteFood = async () => {
+    const recCate = await fetch(`http://localhost:5000/food/${getFoodId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const response = recCate.json();
+    console.log(response);
+    refresh(ref + 1);
+  };
   const edititem = async () => {
     const recCate = await fetch(`http://localhost:5000/food/${getFoodId}`, {
       method: "PUT",
@@ -112,6 +125,9 @@ export default function Card({ categoryId, categoryName }: Props) {
         <DialogTrigger
           onClick={() => {
             setCategory(categoryId);
+            setFoodName("");
+            setIngre("");
+            setPrice(1);
           }}
           className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
         >
@@ -187,7 +203,7 @@ export default function Card({ categoryId, categoryName }: Props) {
           key={food._id}
           className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl"
         >
-          {/* here */}
+          {/* edit dialog here */}
           <Dialog>
             <DialogTrigger
               onClick={() => {
@@ -283,8 +299,19 @@ export default function Card({ categoryId, categoryName }: Props) {
                   <input type="file" className="h-40 border border-border" />
                 </div>
               </div>
-              <DialogFooter>
-                <DialogClose>
+              <div className="flex justify-between">
+                <DialogFooter>
+                  <Link
+                    onClick={() => {
+                      deleteFood();
+                    }}
+                    href={`/admin?page=food menu`}
+                    className=" px-5 p-2 text-foreground"
+                  >
+                    <MdDeleteForever className="text-red-600 text-3xl" />
+                  </Link>
+                </DialogFooter>
+                <DialogFooter className="flex justify-between">
                   <Link
                     onClick={() => {
                       edititem();
@@ -294,8 +321,8 @@ export default function Card({ categoryId, categoryName }: Props) {
                   >
                     Save
                   </Link>
-                </DialogClose>
-              </DialogFooter>
+                </DialogFooter>
+              </div>
             </DialogContent>
           </Dialog>
 

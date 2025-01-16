@@ -15,7 +15,7 @@ export default function AdminMainMenu(props: Props) {
   const foodMenuStyle = `py-2 px-8 bg-background text-primary rounded-full flex gap-2 items-center`;
   const foodMenuStyleSelected = `w-full py-2 px-8 bg-primary text-primary-foreground rounded-full flex gap-2 items-center`;
   return (
-    <div className="w-[205px] min-h-screen bg-background p-5 fixed left-0 top-0">
+    <div className="w-[255px] min-h-screen bg-background p-5 fixed left-0 top-0">
       {/* logo here */}
       <div className="logo flex content-center p-5 gap-3">
         <div className="content-center">
