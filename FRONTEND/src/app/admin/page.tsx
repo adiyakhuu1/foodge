@@ -11,12 +11,14 @@ import Link from "next/link";
 type Props = {
   searchParams: {
     page: string;
+    category: string;
   };
 };
 export default async function App(props: {
-  searchParams: Promise<{ page: string }>;
+  searchParams: Promise<{ page: string; category: string }>;
 }) {
   const { page } = await props.searchParams;
+  const { category } = await props.searchParams;
   console.log(page);
   if (!page) {
     return (
@@ -32,9 +34,9 @@ export default async function App(props: {
       </div>
       <AdminMainMenu page={page} />
       <div className="flex justify-center mt-20 ml-40">
-        {page === `food menu` && <Tabs page={page} />}
-        {page === `orders` && <Tabs page={page} />}
-        {page === `settings` && <Tabs page={page} />}
+        {page === `food menu` && <Tabs page={page} category={category} />}
+        {page === `orders` && <Tabs page={page} category={category} />}
+        {page === `settings` && <Tabs page={page} category={category} />}
       </div>
     </div>
   );

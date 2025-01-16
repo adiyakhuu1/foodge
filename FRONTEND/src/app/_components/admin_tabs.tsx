@@ -18,7 +18,10 @@ import {
 } from "@/components/ui/select";
 import AdminMainMenu from "./admin_main_menu";
 import Image from "next/image";
-import Card from "./card";
+import Card from "./admin-food-card";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import AdminCard from "./admin-food-card";
 
 const TableCard = () => {
   return (
@@ -61,6 +64,7 @@ const TableCard = () => {
 };
 type Props = {
   page: string;
+  category: string;
 };
 export type Dish = {
   name: string;
@@ -78,6 +82,7 @@ export type Food = {
 };
 export default async function Tabs(props: Props) {
   const { page } = props;
+  const { category } = props;
   const res = await fetch(`http://localhost:5000/FoodCategory`);
   const FoodCategory = await res.json();
 
@@ -146,27 +151,50 @@ export default async function Tabs(props: Props) {
             <div className="flex gap-3 flex-wrap px-5">
               {FoodCategory &&
                 FoodCategory.map((category: Dish) => (
-                  <button
+                  <Link
                     key={category._id}
-                    className="border border-border rounded-full py-1 px-3 font-bold text-sm">
-                    {category.name}
-                  </button>
+                    href={`/admin?page=food menu&category=${category._id}`}>
+                    <Badge className="border border-border rounded-full py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background">
+                      {category.name}
+                    </Badge>
+                  </Link>
                 ))}
             </div>
           </div>
         </div>
-        {FoodCategory.map((category: Dish) => (
-          <div
-            key={category._id}
-            className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 ">
-            <div className="text-foreground text-xl font-extrabold">
-              {category.name}
+        {!category &&
+          FoodCategory.map((categor: Dish) => (
+            <div
+              key={categor._id}
+              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 ">
+              <div className="text-foreground text-xl font-extrabold">
+                {categor.name}
+              </div>
+              <div className="flex flex-wrap gap-4 justify-center">
+                <Card categoryName={categor.name} categoryId={categor._id} />
+              </div>
             </div>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Card categoryName={category.name} categoryId={category._id} />
-            </div>
-          </div>
-        ))}
+          ))}
+        {category &&
+          FoodCategory.map((categor: Dish) => {
+            if (categor._id === category) {
+              return (
+                <div
+                  key={categor._id}
+                  className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 ">
+                  <div className="text-foreground text-xl font-extrabold">
+                    {categor.name}
+                  </div>
+                  <div className="flex flex-wrap gap-4 justify-center">
+                    <AdminCard
+                      categoryName={categor.name}
+                      categoryId={categor._id}
+                    />
+                  </div>
+                </div>
+              );
+            }
+          })}
       </div>
     );
   }
