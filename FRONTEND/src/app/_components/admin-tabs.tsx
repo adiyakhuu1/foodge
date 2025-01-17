@@ -22,6 +22,8 @@ import Card from "./admin-food-card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import AdminCard from "./admin-food-card";
+import AdminCategory from "./admin-category-badge";
+import React from "react";
 
 const TableCard = () => {
   return (
@@ -62,10 +64,7 @@ const TableCard = () => {
     </TableRow>
   );
 };
-type Props = {
-  page: string;
-  category: string;
-};
+
 export type Dish = {
   name: string;
   _id: string;
@@ -80,14 +79,31 @@ export type Food = {
   createdAt: string;
   updatedAt: string;
 };
+type Props = {
+  page: string;
+  category: string;
+};
 export default async function Tabs(props: Props) {
   const { page } = props;
-  const { category } = props;
+  const categoryFromProps = props.category;
   const res = await fetch(`http://localhost:5000/FoodCategory`);
   const FoodCategory = await res.json();
+  const res2 = await fetch(`http://localhost:5000/Food`, { method: "GET" });
+  const Foods = await res2.json();
+  let recCate, categorizedFoods: Food[];
+  // if (category !== "all") {
+  //   recCate = await fetch(`http://localhost:5000/food/${category}`, {
+  //     method: "GET",
+  //   });
+
+  //   const categorizedFoods: Food[] = await recCate.json();
+  // }
 
   // const resPizza = await fetch(`http://localhost:5000/Food/${}`);
   // const response = await resPizza.json();
+  if (FoodCategory) {
+    FoodCategory.map(async (category: Dish) => {});
+  }
 
   if (page === `orders`) {
     return (
@@ -149,25 +165,40 @@ export default async function Tabs(props: Props) {
           <div className="w-full h-44 bg-background">
             <div className="text-xl p-5 font-bold">Dishes Category</div>
             <div className="flex gap-3 flex-wrap px-5">
+              <Link href={`/admin?page=food menu&category=all`}>
+                <Badge
+                  className={`border ${
+                    categoryFromProps == `all`
+                      ? `border-red-500 border`
+                      : `border-border rounded-full`
+                  }  py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background`}
+                >
+                  All dishes ({Foods.length})
+                </Badge>
+              </Link>
               {FoodCategory &&
-                FoodCategory.map((category: Dish) => (
-                  <Link
-                    key={category._id}
-                    href={`/admin?page=food menu&category=${category._id}`}
-                  >
-                    <Badge className="border border-border rounded-full py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background">
-                      {category.name}
-                    </Badge>
-                  </Link>
-                ))}
+                FoodCategory.map((category: Dish) => {
+                  return (
+                    <React.Fragment key={category._id}>
+                      <div>
+                        <AdminCategory
+                          id={category._id}
+                          name={category.name}
+                          style={categoryFromProps}
+                        />
+                      </div>
+                    </React.Fragment>
+                  );
+                })}
             </div>
           </div>
         </div>
-        {!category &&
+        {categoryFromProps === `all` &&
+          page === `food menu` &&
           FoodCategory.map((categor: Dish) => (
             <div
               key={categor._id}
-              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 "
+              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
             >
               <div className="text-foreground text-xl font-extrabold">
                 {categor.name}
@@ -177,9 +208,9 @@ export default async function Tabs(props: Props) {
               </div>
             </div>
           ))}
-        {category &&
+        {categoryFromProps &&
           FoodCategory.map((categor: Dish) => {
-            if (categor._id === category) {
+            if (categor._id === categoryFromProps) {
               return (
                 <div
                   key={categor._id}

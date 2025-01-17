@@ -32,6 +32,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AlertDemo, AlertDestructive } from "./alert";
+import { useParams, useSearchParams } from "next/navigation";
 type Props = {
   categoryId: string;
   categoryName: string;
@@ -39,17 +41,20 @@ type Props = {
 configDotenv();
 export default function AdminCard({ categoryId, categoryName }: Props) {
   // add states
-
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
+  // console.log(category);
+  // const { category } = params;
   const [foods, setFoods] = useState<Food[]>([]);
-  const [foodName, setFoodName] = useState<string>("");
-  const [ingredients, setIngre] = useState<string>("");
+  // const [foodName, setFoodName] = useState<string>("");
+  // const [ingredients, setIngre] = useState<string>("");
   const [categories, setAllCategory] = useState<Dish[]>([]);
   const [image, setImage] = useState<string>("");
 
   const [price, setPrice] = useState<number>(1);
   // edit states
   const [getFoodId, setFoodId] = useState<string>("");
-  const [changeCategory, setEditCategory] = useState("");
+  // const [changeCategory, setEditCategory] = useState("");
   const [ref, refresh] = useState(0);
   const [form, setForm] = useState({
     foodName: "",
@@ -58,7 +63,10 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
     image: image,
     category: "",
   });
-
+  const [alerts, setAlerts] = useState({
+    error: false,
+    success: false,
+  });
   useEffect(() => {
     setForm({
       foodName: "",
@@ -68,6 +76,20 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       category: "",
     });
   }, []);
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (alerts.success || alerts.error) {
+      timeout = setTimeout(() => {
+        setAlerts({
+          error: false,
+          success: false,
+        });
+      }, 3000);
+    }
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [alerts]);
   useEffect(() => {
     const fetchData = async () => {
       const recCate = await fetch(`http://localhost:5000/food/${categoryId}`, {
@@ -119,13 +141,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        foodName,
-        price,
-        ingredients,
-        image,
-        category: changeCategory,
-      }),
+      body: JSON.stringify(form),
     });
     const response = recCate.json();
     console.log(response);
@@ -153,7 +169,9 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   };
 
   const onChangeForm = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const value = e.target.value;
     const field = e.target.name;
@@ -163,10 +181,20 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   };
 
   const isValid = () => {
-    return form.foodName && form.price && form.ingredients && form.category;
+    return form.foodName && form.ingredients && form.category;
   };
   return (
     <>
+      {alerts.success && (
+        <div className="fixed top-32 z-50">
+          <AlertDemo />
+        </div>
+      )}
+      {alerts.error && (
+        <div className="absolute top-32 right-[40%] left-[40%] z-50">
+          <AlertDestructive />
+        </div>
+      )}
       <Dialog>
         <DialogTrigger
           name="category"
@@ -197,6 +225,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
             <DialogTitle>Add new Dish to {categoryName}</DialogTitle>
             {/* <DialogDescription>check</DialogDescription> */}
           </DialogHeader>
+
           <div className="flex flex-col gap-3">
             <div className="flex justify-between">
               <div>
@@ -204,7 +233,6 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                 <input
                   name="foodName"
                   onChange={(e) => {
-                    setFoodName(e.target.value);
                     onChangeForm(e);
                   }}
                   placeholder="Enter the food name"
@@ -229,7 +257,6 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               <textarea
                 name="ingredients"
                 onChange={(e) => {
-                  setIngre(e.target.value);
                   onChangeForm(e);
                 }}
                 placeholder="List of ingredients"
@@ -254,24 +281,19 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                 onClick={(e) => {
                   if (!isValid()) {
                     e.preventDefault();
+                    setAlerts((prev) => ({ ...prev, error: true }));
                   } else {
                     addnewitem();
                     console.log(image);
+                    setAlerts((prev) => ({ ...prev, success: true }));
                   }
                 }}
-                href={`/admin?page=food menu`}
-                className={` ${
+                href={`/admin?page=food%20menu&category=${category}`}
+                className={`bg-foreground px-5 p-2 text-secondary rounded-lg ${
                   !isValid() ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                <button
-                  disabled={!isValid()}
-                  className={` bg-foreground px-5 p-2 text-secondary rounded-lg ${
-                    !isValid() ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                >
-                  Save
-                </button>
+                Save
               </Link>
             </DialogClose>
           </DialogFooter>
@@ -281,18 +303,21 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl"
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500"
         >
           {/* edit dialog here */}
+
           <Dialog>
             <DialogTrigger
               onClick={() => {
                 setFoodId(food._id);
-                setEditCategory(food.category);
-                setFoodName(food.foodName);
-                setIngre(food.ingredients);
-                setPrice(food.price);
-                setImage(food.image);
+                setForm({
+                  foodName: food.foodName,
+                  price: food.price,
+                  ingredients: food.ingredients,
+                  image: food.image,
+                  category: food.category,
+                });
               }}
               className=""
             >
@@ -316,11 +341,12 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                   <div className="flex justify-between">
                     <h2>Dish Name</h2>
                     <Input
+                      name="foodName"
                       onChange={(e) => {
-                        setFoodName(e.target.value);
-                        console.log(foodName);
+                        onChangeForm(e);
+                        console.log(form);
                       }}
-                      defaultValue={foodName}
+                      defaultValue={form.foodName}
                       placeholder="Enter the food name"
                       className="border border-border rounded-md p-2 w-[288px] text-foreground bg-background"
                     />
@@ -329,11 +355,12 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                     <label>Select a category</label>
                     <select
                       required
-                      defaultValue={changeCategory}
+                      name="category"
+                      defaultValue={form.category}
                       className="border border-border w-[288px] px-4 py-1 rounded-md text-foreground bg-background"
                       onChange={(e) => {
-                        setEditCategory(e.target.value);
-                        console.log(changeCategory);
+                        onChangeForm(e);
+                        console.log(form);
                       }}
                     >
                       {categories.map((cate) => (
@@ -353,9 +380,11 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                   </div>
                   <div className="flex flex-col">
                     <textarea
-                      defaultValue={ingredients}
+                      name="ingredients"
+                      defaultValue={form.ingredients}
                       onChange={(e) => {
-                        setIngre(e.target.value);
+                        onChangeForm(e);
+                        console.log(form);
                       }}
                       placeholder="List of ingredients"
                       className="border border-border h-20 text-foreground bg-background"
@@ -364,9 +393,10 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                   <div className="flex justify-between ">
                     <h2>Dish Price</h2>
                     <input
-                      defaultValue={price}
+                      name="price"
+                      defaultValue={form.price}
                       onChange={(e) => {
-                        setPrice(Number(e.target.value));
+                        onChangeForm(e);
                       }}
                       type="number"
                       placeholder="Enter the price"
@@ -378,6 +408,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                 <div className="flex flex-col">
                   <label>Food image</label>
                   <input
+                    name="image"
                     type="file"
                     className="h-40 border border-border"
                     onChange={(e) => handleImage(e)}
@@ -390,7 +421,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                     onClick={() => {
                       deleteFood();
                     }}
-                    href={`/admin?page=food menu`}
+                    href={`/admin?page=food menu&category=all`}
                     className=" px-5 p-2 text-foreground"
                   >
                     <MdDeleteForever className="text-red-600 text-3xl" />
@@ -399,11 +430,25 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                 <DialogFooter className="flex justify-between">
                   <DialogClose asChild>
                     <Link
-                      onClick={() => {
-                        edititem();
+                      onClick={(e) => {
+                        if (!isValid()) {
+                          e.preventDefault();
+                          setAlerts({
+                            ...alerts,
+                            error: true,
+                          });
+                        } else {
+                          edititem();
+                          setAlerts({
+                            ...alerts,
+                            success: true,
+                          });
+                        }
                       }}
-                      href={`/admin?page=food menu`}
-                      className="bg-foreground px-5 p-2 text-secondary"
+                      href={`/admin?page=food%20menu&category=${category}`}
+                      className={`px-5 bg-foreground p-2 text-secondary ${
+                        !isValid && `cursor-not-allowed bg-muted`
+                      }`}
                     >
                       Save
                     </Link>

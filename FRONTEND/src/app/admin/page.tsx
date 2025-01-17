@@ -9,14 +9,12 @@ import TTable from "../_components/admin-table";
 import { ModeToggle } from "../_components/darkmode";
 import Link from "next/link";
 type Props = {
-  searchParams: {
+  searchParams: Promise<{
     page: string;
     category: string;
-  };
+  }>;
 };
-export default async function App(props: {
-  searchParams: Promise<{ page: string; category: string }>;
-}) {
+export default async function App(props: Props) {
   const { page } = await props.searchParams;
   const { category } = await props.searchParams;
   console.log(page);
