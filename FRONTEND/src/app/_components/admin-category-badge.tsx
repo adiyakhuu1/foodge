@@ -29,7 +29,7 @@ export default function AdminCategory(props: Props) {
       onClick={() => {
         console.log(name);
       }}
-      href={`/admin?page=food menu&category=${id}`}
+      href={`/admin?page=food+menu&category=${id}`}
     >
       <Badge
         className={`py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background ${

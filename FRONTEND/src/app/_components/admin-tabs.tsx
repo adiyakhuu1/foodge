@@ -7,74 +7,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import AdminMainMenu from "./admin-main_menu";
-import Image from "next/image";
 import Card from "./admin-food-card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import AdminCard from "./admin-food-card";
 import AdminCategory from "./admin-category-badge";
 import React from "react";
-import { Dialog } from "@radix-ui/react-dialog";
-import {
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import AddCategory from "./admin-add-category";
-
-const TableCard = () => {
-  return (
-    <TableRow className="border border-border bg-background">
-      <TableCell>
-        <div className="p-4">
-          <input type="checkbox" />
-        </div>
-      </TableCell>
-      <TableCell>1</TableCell>
-      <TableCell>Amgalan</TableCell>
-      <TableCell>2 foods</TableCell>
-      <TableCell>2024/12/20</TableCell>
-      <TableCell>45000</TableCell>
-      <TableCell>
-        <div className="truncate w-40">
-          2024/12/СБД, 12-р хороо, СБД нэгдсэн эмнэлэг+ Sbd negdsen emneleg |
-          100 айлын гүүрэн гарцны хойд талд 4д ногоонСБД, 12-р хороо, СБД
-          нэгдсэн эмнэлэг Sbd negdsen emneleg | 100 айлын гүүрэн гарцны хойд
-          талд 4д ногоон20
-        </div>
-      </TableCell>
-      <TableCell>
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select a state" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>State</SelectLabel>
-              <SelectItem value="PENDING">PENDING</SelectItem>
-              <SelectItem value="DELIVERED">DELIVERED</SelectItem>
-              <SelectItem value="CANCELLED">CANCELLED</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </TableCell>
-    </TableRow>
-  );
-};
+import { DeleteButton, TableCard } from "./orders-table-cards";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
 
 export type Dish = {
   name: string;
@@ -101,45 +43,17 @@ export default async function Tabs(props: Props) {
   const FoodCategory = await res.json();
   const res2 = await fetch(`http://localhost:5000/Food`, { method: "GET" });
   const Foods = await res2.json();
-  let recCate, categorizedFoods: Food[];
-  let oneFoodCategory = [];
-  let oneF, oneC;
+  let oneC;
 
   if (categoryFromProps) {
-    const res3 = await fetch(
-      `http://localhost:5000/Food/${categoryFromProps}`,
-      {
-        method: "GET",
-      }
-    );
-    oneF = await res3.json();
-    oneFoodCategory.push(oneF);
-    console.log(oneFoodCategory);
-
     const res4 = await fetch(
       `http://localhost:5000/FoodCategory/${categoryFromProps}`
     );
-    oneC = await res4.json();
+    if (res4) {
+      oneC = await res4.json();
+    }
     console.log(oneC);
   }
-  // try {
-  // } catch (err) {
-  //   console.error(err, "aldaa");
-  // }
-  // console.log(oneFoodCategory);
-  // if (category !== "all") {
-  //   recCate = await fetch(`http://localhost:5000/food/${category}`, {
-  //     method: "GET",
-  //   });
-
-  //   const categorizedFoods: Food[] = await recCate.json();
-  // }
-
-  // const resPizza = await fetch(`http://localhost:5000/Food/${}`);
-  // const response = await resPizza.json();
-  // if (FoodCategory) {
-  //   FoodCategory.map(async (category: Dish) => {});
-  // }
 
   if (page === `orders`) {
     return (
@@ -198,16 +112,17 @@ export default async function Tabs(props: Props) {
     return (
       <div className="flex flex-col gap-10 w-[70%] right-40">
         <div className="w-full ">
-          <div className="w-full h-44 bg-background">
+          <div className="w-full h-auto py-10 bg-background">
             <div className="text-xl p-5 font-bold">Dishes Category</div>
             <div className="flex gap-3 flex-wrap px-5">
-              <Link href={`/admin?page=food menu`}>
+              <Link href={`/admin?page=food+menu`}>
                 <Badge
                   className={`border ${
                     !categoryFromProps
                       ? `border-red-500 border`
                       : `border-border rounded-full`
-                  }  py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background`}>
+                  }  py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background`}
+                >
                   All dishes ({Foods.length})
                 </Badge>
               </Link>
@@ -231,26 +146,42 @@ export default async function Tabs(props: Props) {
           </div>
         </div>
         {!categoryFromProps &&
-          FoodCategory.map((categor: Dish) => (
+          FoodCategory.map((categor: Dish, index: number) => (
             <div
               key={categor._id}
-              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 ">
-              <div className="text-foreground text-xl font-extrabold">
-                {categor.name}
+              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
+            >
+              <div className="text-foreground text-xl font-extrabold flex justify-between">
+                <div>
+                  {index + 1 + ". "}
+                  {categor.name}
+                </div>
               </div>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Card categoryName={categor.name} categoryId={categor._id} />
               </div>
             </div>
           ))}
+        {/* {FoodCategory.map((cate: Dish) => {
+          // let isFound = false;
+          if (cate._id !== categoryFromProps) {
+            return <div>Category ustgasan esvel ogt baigaagui!</div>;
+          }
+        })} */}
         {oneC &&
-          oneC.map((categor: Dish) => {
+          oneC.map((categor: Dish, index: number) => {
             return (
               <div
                 key={categor._id}
-                className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 ">
-                <div className="text-foreground text-xl font-extrabold">
-                  {categor.name}
+                className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
+              >
+                <div className="text-foreground text-xl flex justify-between font-extrabold ">
+                  <div>
+                    {index + 1 + ". "}
+                    {categor.name}
+                  </div>
+
+                  <DeleteButton categor={categor} />
                 </div>
                 <div className="flex flex-wrap gap-4 justify-center">
                   <AdminCard

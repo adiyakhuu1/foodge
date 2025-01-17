@@ -11,21 +11,26 @@ import {
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function AddCategory() {
   const [name, setName] = useState<string>("");
+  const path = usePathname();
+  const searchParams = useSearchParams();
   const handleClick = async () => {
     const res = await fetch(`http://localhost:5000/FoodCategory/addnew`, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         name,
       }),
     });
-    console.log(res);
+    const response = await res.json();
+    console.log(response);
   };
   return (
     <Dialog>
@@ -54,17 +59,19 @@ export default function AddCategory() {
             className="border border-border h-9 w-full"
           />
         </div>
-        <DialogClose asChild className="">
-          <DialogFooter>
-            <div
+
+        <DialogFooter>
+          <DialogClose asChild>
+            <button
+              className="bg-foreground text-background flex p-3 rounded-xl"
               onClick={() => {
                 handleClick();
               }}
-              className="bg-foreground text-background flex p-3 rounded-xl">
+            >
               Save Changes
-            </div>
-          </DialogFooter>
-        </DialogClose>
+            </button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

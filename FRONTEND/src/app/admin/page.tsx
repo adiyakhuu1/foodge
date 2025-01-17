@@ -21,7 +21,7 @@ export default async function App(props: Props) {
   console.log(page);
   if (!page) {
     return (
-      <Link href={`?page=food menu`}>
+      <Link href={`?page=food+menu`}>
         <div>???????</div>
       </Link>
     );

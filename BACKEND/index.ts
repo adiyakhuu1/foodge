@@ -24,7 +24,6 @@ const connectToDb = async () => {
 };
 connectToDb();
 
-// Food Category - Schema
 const foodCategory = new mongoose.Schema(
   {
     categoryName: String,
@@ -34,15 +33,12 @@ const foodCategory = new mongoose.Schema(
   }
 );
 
-// User - Schema
 const user = new mongoose.Schema(
   {
     email: String,
     password: String,
     phoneNumber: String,
     address: String,
-    // role:
-    // orderedFoods:
     ttl: Date,
     isVerified: Boolean,
   },
@@ -50,17 +46,12 @@ const user = new mongoose.Schema(
     timestamps: true,
   }
 );
-// FoodOrder - Schema
 const FoodOrder = new mongoose.Schema(
   {
-    // user:
     totalPrice: Number,
-    // foodOrderItems:
-    // status:
   },
   { timestamps: true }
 );
-// FoodOrderItem
 const FoodOrderItem = new mongoose.Schema({
   // food: ObjectId
   quantity: Number,
@@ -69,28 +60,7 @@ const FoodOrderItem = new mongoose.Schema({
 app.use("/FoodCategory", FoodCategoryRouter);
 app.use("/food", foodRouter);
 
-/// irrelevant
-// app.post("/createModel", async (req: Request, res: Response) => {
-//   const body = req.body;
-
-//   const newCollection = mongoose.model(body.name, foodSchema);
-//   console.log(newCollection);
-//   // const body.schemaName =
-//   const result1 = await newCollection.find();
-//   const result2 = await foodCategory_model.find();
-//   res.json(result1);
-// });
-// app.post("/addSchemaToDrinks", async (req: Request, res: Response) => {
-//   const body = req.body;
-//   drinks.create(body);
-//   res.json(drinks);
-// });
-
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
   console.log(URI);
 });
-
-// CLOUDINARY_CLOUD_NAME
-// CLOUDINARY_API_KEY
-// CLOUDINARY_API_SECRET

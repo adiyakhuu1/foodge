@@ -29,16 +29,17 @@ export default function Categories() {
       <div className="w-[90%] flex flex-col gap-5">
         <div className="text-primary-foreground text-3xl ">Categories</div>
         <div className="flex gap-4">
-          <div className="overflow-scroll w-full flex gap-7 items-center justify-center">
+          <div className="overflow-scroll w-full flex gap-7 items-center justify-center scrollbar-none">
             <MdArrowBackIosNew className="text-background" />
-            <div className="overflow-scroll justify-center flex gap-5 w-full">
+            <div className="overflow-scroll justify-center scrollbar-none flex gap-5 w-full">
               {categories.map((category: Dish) => (
                 <Link href={`/?category=${category._id}`} key={category._id}>
                   <Badge
                     className={` ${
                       categoryFromParams === category._id &&
                       `bg-red-500 text-background `
-                    }`}>
+                    }`}
+                  >
                     {category.name}
                   </Badge>
                 </Link>
@@ -71,6 +72,7 @@ export default function Categories() {
                   <div className="flex flex-col gap-5">
                     <div className="text-3xl text-background">
                       {category.name}
+                      <div>X</div>
                     </div>
                     <div className="flex gap-5 flex-wrap">
                       <UserFoodCard

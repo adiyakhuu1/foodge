@@ -8,8 +8,9 @@ export default function App() {
   return (
     <div className="bg-neutral-700 min-h-screen relative">
       <Link
-        href={`/admin?page=food%20menu`}
-        className="absolute text-white left-1/2 right-1/2">
+        href={`/admin?page=food+menu`}
+        className="absolute text-white left-1/2 right-1/2"
+      >
         Admin
       </Link>
       <Navigaion />

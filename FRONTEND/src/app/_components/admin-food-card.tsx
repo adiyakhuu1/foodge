@@ -33,13 +33,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AlertDemo, AlertDestructive } from "./alert";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 type Props = {
   categoryId: string;
   categoryName: string;
 };
 configDotenv();
 export default function AdminCard({ categoryId, categoryName }: Props) {
+  const path = usePathname();
   // add states
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
@@ -60,7 +61,6 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
     foodName: "",
     price: 1,
     ingredients: "",
-    image: image,
     category: "",
   });
   const [alerts, setAlerts] = useState({
@@ -72,7 +72,6 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       foodName: "",
       price: 1,
       ingredients: "",
-      image: image,
       category: "",
     });
   }, []);
@@ -141,7 +140,10 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        image,
+      }),
     });
     const response = recCate.json();
     console.log(response);
@@ -183,6 +185,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   const isValid = () => {
     return form.foodName && form.ingredients && form.category;
   };
+
   return (
     <>
       {alerts.success && (
@@ -204,11 +207,11 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               foodName: "",
               price: 1,
               ingredients: "",
-              image: image,
               category: categoryId,
             });
           }}
-          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center">
+          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
+        >
           <div>
             <Image
               src={`/img/add-new-button.png`}
@@ -287,10 +290,11 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                     setAlerts((prev) => ({ ...prev, success: true }));
                   }
                 }}
-                href={`/admin?page=food%20menu&category=${category}`}
+                href={`/admin?page=food+menu&category=${category}`}
                 className={`bg-foreground px-5 p-2 text-secondary rounded-lg ${
                   !isValid() ? "opacity-50 cursor-not-allowed" : ""
-                }`}>
+                }`}
+              >
                 Save
               </Link>
             </DialogClose>
@@ -301,7 +305,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500">
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500"
+        >
           {/* edit dialog here */}
 
           <Dialog>
@@ -312,11 +317,11 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                   foodName: food.foodName,
                   price: food.price,
                   ingredients: food.ingredients,
-                  image: food.image,
                   category: food.category,
                 });
               }}
-              className="">
+              className=""
+            >
               <div>
                 <Image
                   className="absolute top-1/2 right-4 border border-border rounded-full shadow-lg"
@@ -357,7 +362,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       onChange={(e) => {
                         onChangeForm(e);
                         console.log(form);
-                      }}>
+                      }}
+                    >
                       {categories.map((cate) => (
                         <option
                           // onClick={() => {
@@ -366,7 +372,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                           // }}
                           key={cate._id}
                           value={`${cate._id}`}
-                          className="text-foreground bg-background">
+                          className="text-foreground bg-background"
+                        >
                           {cate.name}
                         </option>
                       ))}
@@ -415,8 +422,9 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                     onClick={() => {
                       deleteFood();
                     }}
-                    href={`/admin?page=food menu`}
-                    className=" px-5 p-2 text-foreground">
+                    href={path + "?" + searchParams}
+                    className=" px-5 p-2 text-foreground"
+                  >
                     <MdDeleteForever className="text-red-600 text-3xl" />
                   </Link>
                 </DialogFooter>
@@ -438,10 +446,11 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                           });
                         }
                       }}
-                      href={`/admin?page=food%20menu&category=${category}`}
+                      href={`/admin?page=food+menu&category=${category}`}
                       className={`px-5 bg-foreground p-2 text-secondary ${
                         !isValid && `cursor-not-allowed bg-muted`
-                      }`}>
+                      }`}
+                    >
                       Save
                     </Link>
                   </DialogClose>

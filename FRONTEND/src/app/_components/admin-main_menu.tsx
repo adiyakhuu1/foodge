@@ -23,18 +23,20 @@ export default function AdminMainMenu(props: Props) {
       {/* menu here */}
       <div className="justify-items-center">
         <div className="flex flex-col gap-[10px] w-full">
-          <Link href={`/admin?page=food%20menu`}>
+          <Link href={`/admin?page=food+menu`}>
             <button
               className={
-                page === `food menu` ? foodMenuStyleSelected : foodMenuStyle
-              }>
+                page === `food+menu` ? foodMenuStyleSelected : foodMenuStyle
+              }
+            >
               <MdOutlineDashboard />
               <h3 className="text-sm">Food menu</h3>
             </button>
           </Link>
           <Link href={`/admin?page=orders`}>
             <button
-              className={page === `orders` ? orderStyleSelected : orderStyle}>
+              className={page === `orders` ? orderStyleSelected : orderStyle}
+            >
               <HiOutlineTruck />
               <h3 className="text-sm"> Orders</h3>
             </button>
@@ -43,7 +45,8 @@ export default function AdminMainMenu(props: Props) {
             <button
               className={
                 page === `settings` ? settingsStyleSelected : settingsStyle
-              }>
+              }
+            >
               <CiSettings />
               <h3 className="text-sm"> Settings</h3>
             </button>
