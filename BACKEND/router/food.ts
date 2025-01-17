@@ -20,6 +20,10 @@ foodRouter.delete("/:_id", async (req: Request, res: Response) => {
   }
 });
 foodRouter.get("/:category", async (req: Request, res: Response) => {
+  if (!req.params) {
+    res.json({ message: "no params" });
+    return;
+  }
   const params = req.params;
   const result = await food_model.find(params);
   res.json(result);

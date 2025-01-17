@@ -7,6 +7,14 @@ FoodCategoryRouter.get("/", async (req: Request, res: Response) => {
   const result = await foodCategory_model.find();
   res.json(result);
 });
+FoodCategoryRouter.get("/:_id", async (req: Request, res: Response) => {
+  if (!req.params) {
+    res.json({ message: "no params" });
+    return;
+  }
+  const result = await foodCategory_model.find(req.params);
+  res.json(result);
+});
 FoodCategoryRouter.post("/addnew", async (req: Request, res: Response) => {
   // const body = req.body;?
   const newCategory = await foodCategory_model.create(req.body, {

@@ -208,8 +208,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               category: categoryId,
             });
           }}
-          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
-        >
+          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center">
           <div>
             <Image
               src={`/img/add-new-button.png`}
@@ -291,8 +290,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                 href={`/admin?page=food%20menu&category=${category}`}
                 className={`bg-foreground px-5 p-2 text-secondary rounded-lg ${
                   !isValid() ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
+                }`}>
                 Save
               </Link>
             </DialogClose>
@@ -303,8 +301,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500"
-        >
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500">
           {/* edit dialog here */}
 
           <Dialog>
@@ -319,8 +316,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                   category: food.category,
                 });
               }}
-              className=""
-            >
+              className="">
               <div>
                 <Image
                   className="absolute top-1/2 right-4 border border-border rounded-full shadow-lg"
@@ -361,8 +357,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       onChange={(e) => {
                         onChangeForm(e);
                         console.log(form);
-                      }}
-                    >
+                      }}>
                       {categories.map((cate) => (
                         <option
                           // onClick={() => {
@@ -371,8 +366,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                           // }}
                           key={cate._id}
                           value={`${cate._id}`}
-                          className="text-foreground bg-background"
-                        >
+                          className="text-foreground bg-background">
                           {cate.name}
                         </option>
                       ))}
@@ -421,9 +415,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                     onClick={() => {
                       deleteFood();
                     }}
-                    href={`/admin?page=food menu&category=all`}
-                    className=" px-5 p-2 text-foreground"
-                  >
+                    href={`/admin?page=food menu`}
+                    className=" px-5 p-2 text-foreground">
                     <MdDeleteForever className="text-red-600 text-3xl" />
                   </Link>
                 </DialogFooter>
@@ -448,8 +441,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       href={`/admin?page=food%20menu&category=${category}`}
                       className={`px-5 bg-foreground p-2 text-secondary ${
                         !isValid && `cursor-not-allowed bg-muted`
-                      }`}
-                    >
+                      }`}>
                       Save
                     </Link>
                   </DialogClose>

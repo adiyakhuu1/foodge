@@ -23,7 +23,7 @@ export default function AdminMainMenu(props: Props) {
       {/* menu here */}
       <div className="justify-items-center">
         <div className="flex flex-col gap-[10px] w-full">
-          <Link href={`/admin?page=food menu`}>
+          <Link href={`/admin?page=food%20menu`}>
             <button
               className={
                 page === `food menu` ? foodMenuStyleSelected : foodMenuStyle

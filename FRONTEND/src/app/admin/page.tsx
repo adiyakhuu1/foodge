@@ -8,6 +8,7 @@ import Tabs from "../_components/admin-tabs";
 import TTable from "../_components/admin-table";
 import { ModeToggle } from "../_components/darkmode";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 type Props = {
   searchParams: Promise<{
     page: string;
@@ -27,8 +28,14 @@ export default async function App(props: Props) {
   }
   return (
     <div className="flex w-full min-h-screen bg-secondary relative">
-      <div className="absolute right-10 top-10">
+      <div className="fixed right-10 bottom-10">
         <ModeToggle />
+      </div>
+      <div className="absolute right-10 top-10">
+        <Avatar>
+          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
       </div>
       <AdminMainMenu page={page} />
       <div className="flex justify-center mt-20 ml-40">

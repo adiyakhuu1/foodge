@@ -1,16 +1,19 @@
 import mongoose from "mongoose";
 
 const foodcatSchema = new mongoose.Schema({
-  name: String,
+  name: { type: String },
 });
 // Food - Schema
 const food = new mongoose.Schema(
   {
-    foodName: String,
-    price: Number,
-    image: String,
-    ingredients: String,
-    category: mongoose.Schema.Types.ObjectId,
+    foodName: { type: String },
+    price: { type: Number },
+    image: { type: String },
+    ingredients: { type: String },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "foodCategory",
+    },
   },
   { timestamps: true }
 );

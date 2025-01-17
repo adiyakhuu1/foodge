@@ -24,6 +24,17 @@ import Link from "next/link";
 import AdminCard from "./admin-food-card";
 import AdminCategory from "./admin-category-badge";
 import React from "react";
+import { Dialog } from "@radix-ui/react-dialog";
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import AddCategory from "./admin-add-category";
 
 const TableCard = () => {
   return (
@@ -91,6 +102,31 @@ export default async function Tabs(props: Props) {
   const res2 = await fetch(`http://localhost:5000/Food`, { method: "GET" });
   const Foods = await res2.json();
   let recCate, categorizedFoods: Food[];
+  let oneFoodCategory = [];
+  let oneF, oneC;
+
+  if (categoryFromProps) {
+    const res3 = await fetch(
+      `http://localhost:5000/Food/${categoryFromProps}`,
+      {
+        method: "GET",
+      }
+    );
+    oneF = await res3.json();
+    oneFoodCategory.push(oneF);
+    console.log(oneFoodCategory);
+
+    const res4 = await fetch(
+      `http://localhost:5000/FoodCategory/${categoryFromProps}`
+    );
+    oneC = await res4.json();
+    console.log(oneC);
+  }
+  // try {
+  // } catch (err) {
+  //   console.error(err, "aldaa");
+  // }
+  // console.log(oneFoodCategory);
   // if (category !== "all") {
   //   recCate = await fetch(`http://localhost:5000/food/${category}`, {
   //     method: "GET",
@@ -101,9 +137,9 @@ export default async function Tabs(props: Props) {
 
   // const resPizza = await fetch(`http://localhost:5000/Food/${}`);
   // const response = await resPizza.json();
-  if (FoodCategory) {
-    FoodCategory.map(async (category: Dish) => {});
-  }
+  // if (FoodCategory) {
+  //   FoodCategory.map(async (category: Dish) => {});
+  // }
 
   if (page === `orders`) {
     return (
@@ -165,14 +201,13 @@ export default async function Tabs(props: Props) {
           <div className="w-full h-44 bg-background">
             <div className="text-xl p-5 font-bold">Dishes Category</div>
             <div className="flex gap-3 flex-wrap px-5">
-              <Link href={`/admin?page=food menu&category=all`}>
+              <Link href={`/admin?page=food menu`}>
                 <Badge
                   className={`border ${
-                    categoryFromProps == `all`
+                    !categoryFromProps
                       ? `border-red-500 border`
                       : `border-border rounded-full`
-                  }  py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background`}
-                >
+                  }  py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background`}>
                   All dishes ({Foods.length})
                 </Badge>
               </Link>
@@ -190,16 +225,16 @@ export default async function Tabs(props: Props) {
                     </React.Fragment>
                   );
                 })}
+              {/* reminder */}
+              <AddCategory />
             </div>
           </div>
         </div>
-        {categoryFromProps === `all` &&
-          page === `food menu` &&
+        {!categoryFromProps &&
           FoodCategory.map((categor: Dish) => (
             <div
               key={categor._id}
-              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
-            >
+              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 ">
               <div className="text-foreground text-xl font-extrabold">
                 {categor.name}
               </div>
@@ -208,26 +243,23 @@ export default async function Tabs(props: Props) {
               </div>
             </div>
           ))}
-        {categoryFromProps &&
-          FoodCategory.map((categor: Dish) => {
-            if (categor._id === categoryFromProps) {
-              return (
-                <div
-                  key={categor._id}
-                  className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 "
-                >
-                  <div className="text-foreground text-xl font-extrabold">
-                    {categor.name}
-                  </div>
-                  <div className="flex flex-wrap gap-4 justify-center">
-                    <AdminCard
-                      categoryName={categor.name}
-                      categoryId={categor._id}
-                    />
-                  </div>
+        {oneC &&
+          oneC.map((categor: Dish) => {
+            return (
+              <div
+                key={categor._id}
+                className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll p-4 ">
+                <div className="text-foreground text-xl font-extrabold">
+                  {categor.name}
                 </div>
-              );
-            }
+                <div className="flex flex-wrap gap-4 justify-center">
+                  <AdminCard
+                    categoryName={categor.name}
+                    categoryId={categor._id}
+                  />
+                </div>
+              </div>
+            );
           })}
       </div>
     );
