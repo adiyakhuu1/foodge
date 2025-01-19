@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 export const Create = () => {
@@ -33,12 +34,13 @@ export const Create = () => {
             console.log(name);
           }}
         />
-        <button
+        <Button
           onClick={() => {
             addtofoodcat();
-          }}>
+          }}
+        >
           Click here (schema for food-category)
-        </button>
+        </Button>
       </div>
       <div>
         <div className="flex gap-7">

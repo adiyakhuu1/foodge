@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Dish, Food } from "./admin-tabs";
+// import { Dish, Food } from "/_admin_components/admin-tabs.tsx";
+import { Dish, Food } from "./_admin_components/admin-tabs";
 import {
   Dialog,
   DialogClose,

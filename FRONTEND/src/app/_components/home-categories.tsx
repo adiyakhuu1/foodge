@@ -1,18 +1,20 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
-import { Dish, Food } from "./admin-tabs";
+import { Dish, Food } from "./_admin_components/admin-tabs";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { MdArrowForwardIos } from "react-icons/md";
-import Card from "./admin-food-card";
-import UserFoodCard from "./user-food-card";
+import { Card } from "@/components/ui/card";
+import UserFoodCard from "./_reusable/user-food-card";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Section from "./_reusable/section";
+import CategoryBadge from "./_reusable/category-badge";
 
 export default function Categories() {
   const [categories, setCategories] = useState<Dish[]>([]);
   const searchParams = useSearchParams();
-  const categoryFromParams = searchParams.get("category");
+  const categoryFromParams: string | null = searchParams.get("category");
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(`http://localhost:5000/FoodCategory`, {
@@ -34,14 +36,11 @@ export default function Categories() {
             <div className="overflow-scroll justify-center scrollbar-none flex gap-5 w-full">
               {categories.map((category: Dish) => (
                 <Link href={`/?category=${category._id}`} key={category._id}>
-                  <Badge
-                    className={` ${
-                      categoryFromParams === category._id &&
-                      `bg-red-500 text-background `
-                    }`}
-                  >
-                    {category.name}
-                  </Badge>
+                  <CategoryBadge
+                    key={category._id}
+                    category={category}
+                    categoryFromParams={categoryFromParams}
+                  />
                 </Link>
               ))}
             </div>
@@ -53,15 +52,7 @@ export default function Categories() {
         {!categoryFromParams &&
           categories.map((category) => (
             <React.Fragment key={category._id}>
-              <div className="flex flex-col gap-5">
-                <div className="text-3xl text-background">{category.name}</div>
-                <div className="flex gap-5 flex-wrap">
-                  <UserFoodCard
-                    categoryName={category.name}
-                    categoryId={category._id}
-                  />
-                </div>
-              </div>
+              <Section category={category} />
             </React.Fragment>
           ))}
         {categoryFromParams &&
@@ -69,18 +60,7 @@ export default function Categories() {
             if (category._id === categoryFromParams) {
               return (
                 <React.Fragment key={category._id}>
-                  <div className="flex flex-col gap-5">
-                    <div className="text-3xl text-background">
-                      {category.name}
-                      <div>X</div>
-                    </div>
-                    <div className="flex gap-5 flex-wrap">
-                      <UserFoodCard
-                        categoryName={category.name}
-                        categoryId={category._id}
-                      />
-                    </div>
-                  </div>
+                  <Section category={category} />
                 </React.Fragment>
               );
             }

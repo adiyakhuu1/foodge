@@ -2,13 +2,14 @@ import Image from "next/image";
 import { MdOutlineDashboard } from "react-icons/md";
 import { HiOutlineTruck } from "react-icons/hi2";
 import { CiSettings } from "react-icons/ci";
-import AdminMainMenu from "../_components/admin-main_menu";
-import Table from "../_components/admin-table";
-import Tabs from "../_components/admin-tabs";
-import TTable from "../_components/admin-table";
+import AdminMainMenu from "../_components/_admin_components/admin-main_menu";
+import Table from "../_components/_admin_components/admin-table";
+import Tabs from "../_components/_admin_components/admin-tabs";
+import TTable from "../_components/_admin_components/admin-table";
 import { ModeToggle } from "../_components/darkmode";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Pfp } from "../_components/_reusable/pfp";
 type Props = {
   searchParams: Promise<{
     page: string;
@@ -32,10 +33,7 @@ export default async function App(props: Props) {
         <ModeToggle />
       </div>
       <div className="absolute right-10 top-10">
-        <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+        <Pfp />
       </div>
       <AdminMainMenu page={page} />
       <div className="flex justify-center mt-20 ml-40">

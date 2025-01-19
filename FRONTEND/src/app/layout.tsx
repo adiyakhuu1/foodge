@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className} dark`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className}`}
       >
         <Suspense>
           <ThemeProvider>{children}</ThemeProvider>

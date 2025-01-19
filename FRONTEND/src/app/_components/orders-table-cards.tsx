@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Dish } from "./admin-tabs";
+import { Dish } from "./_admin_components/admin-tabs";
 import Link from "next/link";
 import { useParams, usePathname, useSearchParams } from "next/navigation";
 import {
