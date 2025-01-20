@@ -23,6 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { MdDeleteForever } from "react-icons/md";
 import { configDotenv } from "dotenv";
+// import { useRouter } from "next/router";
 import {
   Select,
   SelectContent,
@@ -33,11 +34,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AlertDemo, AlertDestructive } from "../alert";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useSearchParams,
+  useRouter,
+} from "next/navigation";
+import { Button } from "@/components/ui/button";
 type Props = {
   categoryId: string;
   categoryName: string;
 };
+
 configDotenv();
 export default function AdminCard({ categoryId, categoryName }: Props) {
   const path = usePathname();
@@ -149,6 +157,11 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
     console.log(response);
     refresh(ref + 1);
   };
+  const router = useRouter();
+  // const handleReload = () => {
+  //   // router.refresh();
+  //   console.log(`checking`);
+  // };
   const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const img = e.target.files[0];
@@ -279,7 +292,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Link
+              <Button
                 onClick={(e) => {
                   if (!isValid()) {
                     e.preventDefault();
@@ -288,15 +301,15 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                     addnewitem();
                     console.log(image);
                     setAlerts((prev) => ({ ...prev, success: true }));
+                    // handleReload();
                   }
                 }}
-                href={`/admin?page=food+menu&category=${category}`}
                 className={`bg-foreground px-5 p-2 text-secondary rounded-lg ${
                   !isValid() ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
                 Save
-              </Link>
+              </Button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>
@@ -430,7 +443,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                 </DialogFooter>
                 <DialogFooter className="flex justify-between">
                   <DialogClose asChild>
-                    <Link
+                    <Button
                       onClick={(e) => {
                         if (!isValid()) {
                           e.preventDefault();
@@ -444,15 +457,15 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                             ...alerts,
                             success: true,
                           });
+                          // handleReload();
                         }
                       }}
-                      href={`/admin?page=food+menu&category=${category}`}
                       className={`px-5 bg-foreground p-2 text-secondary ${
                         !isValid && `cursor-not-allowed bg-muted`
                       }`}
                     >
                       Save
-                    </Link>
+                    </Button>
                   </DialogClose>
                 </DialogFooter>
               </div>

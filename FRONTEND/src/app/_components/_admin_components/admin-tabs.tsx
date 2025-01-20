@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import AdminCard from "./admin-food-card";
 import AdminCategory from "./admin-category-badge";
-import React from "react";
+import React, { Suspense } from "react";
 import AddCategory from "./admin-add-category";
 import { DeleteButton, TableCard } from "../orders-table-cards";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
@@ -46,13 +46,17 @@ export default async function Tabs(props: Props) {
   let oneC;
 
   if (categoryFromProps) {
-    const res4 = await fetch(
-      `http://localhost:5000/FoodCategory/${categoryFromProps}`
-    );
-    if (res4) {
-      oneC = await res4.json();
+    try {
+      const res4 = await fetch(
+        `http://localhost:5000/FoodCategory/${categoryFromProps}`
+      );
+      if (res4) {
+        oneC = await res4.json();
+      }
+      console.log(oneC);
+    } catch (error) {
+      console.log(error, "aldaa");
     }
-    console.log(oneC);
   }
 
   if (page === `orders`) {
@@ -168,30 +172,32 @@ export default async function Tabs(props: Props) {
             return <div>Category ustgasan esvel ogt baigaagui!</div>;
           }
         })} */}
-        {oneC &&
-          oneC.map((categor: Dish, index: number) => {
-            return (
-              <div
-                key={categor._id}
-                className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
-              >
-                <div className="text-foreground text-xl flex justify-between font-extrabold ">
-                  <div>
-                    {index + 1 + ". "}
-                    {categor.name}
-                  </div>
+        <Suspense>
+          {oneC &&
+            oneC.map((categor: Dish, index: number) => {
+              return (
+                <div
+                  key={categor._id}
+                  className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
+                >
+                  <div className="text-foreground text-xl flex justify-between font-extrabold ">
+                    <div>
+                      {index + 1 + ". "}
+                      {categor.name}
+                    </div>
 
-                  <DeleteButton categor={categor} />
+                    <DeleteButton categor={categor} />
+                  </div>
+                  <div className="flex flex-wrap gap-4 justify-center">
+                    <AdminCard
+                      categoryName={categor.name}
+                      categoryId={categor._id}
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  <AdminCard
-                    categoryName={categor.name}
-                    categoryId={categor._id}
-                  />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+        </Suspense>
       </div>
     );
   }

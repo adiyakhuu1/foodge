@@ -84,7 +84,7 @@ export const DeleteButton = (props: deletebuttonprops) => {
               <div className="text-center">
                 You are going to delete "
                 <span className="text-red-700">
-                  {categor.name.toUpperCase()}
+                  {categor.name && categor.name.toUpperCase()}
                 </span>
                 ". <br /> Are you sure?
               </div>
