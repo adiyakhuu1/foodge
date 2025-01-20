@@ -14,6 +14,8 @@ import {
 import { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { Button } from "@/components/ui/button";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { Pfp } from "./pfp";
 type Props = {
   categoryId: string;
   categoryName: string;
@@ -25,14 +27,18 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   const [ingredients, setIngre] = useState<string>("");
   const [chooseCate, setCategory] = useState<string>("");
   const [categories, setAllCategory] = useState<Dish[]>([]);
+  const [selected, selectedFood] = useState({});
 
   const [price, setPrice] = useState<number>(1);
   // edit states
   const [getFoodId, setFoodId] = useState<string>("");
   const [changeCategory, setEditCategory] = useState("");
   const [count, setCount] = useState<number>(1);
-
+  const [order, setOrder] = useState<string[]>([]);
   const [ref, refresh] = useState(0);
+
+  const handleSelectedFoods = () => {};
+  // let order = [];
   useEffect(() => {
     const fetchData = async () => {
       const recCate = await fetch(`http://localhost:5000/food/${categoryId}`, {
@@ -53,14 +59,12 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
     };
     fetchData();
   }, [ref]);
-  console.log(foods);
   return (
     <>
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl"
-        >
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl">
           {/* edit dialog here */}
           <Dialog>
             <DialogTrigger
@@ -71,9 +75,10 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                 setIngre(food.ingredients);
                 setPrice(food.price);
                 setCount(1);
+                console.log(order);
+                // selectedFood(food);
               }}
-              className=""
-            >
+              className="">
               <div>
                 <GoPlus className="absolute top-[40%] bg-background right-4 text-red-500 text-xs w-10 h-10 rounded-full shadow-lg" />
               </div>
@@ -117,8 +122,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         }`}
                         onClick={() => {
                           setCount((p) => p - 1);
-                        }}
-                      >
+                          console.log(count);
+                        }}>
                         -
                       </Button>
                       {count}
@@ -126,15 +131,34 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         className="bg-background border border-foreground rounded-full text-foreground hover:text-background"
                         onClick={() => {
                           setCount((p) => p + 1);
-                        }}
-                      >
+                          console.log(count);
+                        }}>
                         +
                       </Button>
                     </div>
                   </div>
-                  <Button className="w-full rounded-lg bg-primary">
-                    Add to cart
-                  </Button>
+                  <SignedIn>
+                    <DialogClose asChild>
+                      <Button
+                        onClick={() => {
+                          setOrder([...order, food._id]);
+                          console.log(order);
+                        }}
+                        className="w-full rounded-lg bg-primary">
+                        Add to cart
+                      </Button>
+                    </DialogClose>
+                  </SignedIn>
+                  <SignedOut>
+                    <div className="flex items-center gap-4 justify-center">
+                      <SignInButton>
+                        <div>
+                          <Pfp />
+                          <div>Sign in</div>
+                        </div>
+                      </SignInButton>
+                    </div>
+                  </SignedOut>
                 </div>
               </div>
             </DialogContent>

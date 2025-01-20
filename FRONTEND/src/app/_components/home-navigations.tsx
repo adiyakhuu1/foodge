@@ -5,6 +5,17 @@ import { CiShoppingCart } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
 import { Pfp } from "./_reusable/pfp";
 import { Button } from "@/components/ui/button";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
+import DeliveryAddress from "./_reusable/delivery-address-button";
+import Cart from "./_reusable/cart-button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 export default function Navigaion() {
   return (
     <div className="bg-primary h-17 w-full justify-items-center">
@@ -13,16 +24,19 @@ export default function Navigaion() {
           <Logo style="text-background" />
         </div>
         <div className="flex gap-3">
-          <Button className="flex px-4 p-2 gap-1 bg-background rounded-3xl items-center hover:bg-secondary">
-            <IoLocationOutline className="text-2xl text-red-500" />
-            <div className="text-red-500">Delivery address: </div>
-            <div className="text-foreground">Add Location</div>
-            <IoIosArrowForward />
-          </Button>
-          <Button className="p-3 bg-secondary rounded-full hover:bg-background">
-            <CiShoppingCart className="text-xl text-foreground" />
-          </Button>
+          <DeliveryAddress />
+          <Sheet>
+            <SheetTrigger>
+              <Cart />
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Title</SheetTitle>
 
+                <SheetDescription>Description</SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
           <Pfp />
         </div>
       </div>

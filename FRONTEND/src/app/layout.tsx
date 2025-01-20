@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./_components/theme-provider";
 import { Suspense } from "react";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,10 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className}`}
-      >
+        className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className}`}>
         <Suspense>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ClerkProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </ClerkProvider>
         </Suspense>
       </body>
     </html>

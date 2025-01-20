@@ -4,24 +4,28 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  SignedIn,
+  SignedOut,
+  SignIn,
+  SignInButton,
+  UserButton,
+} from "@clerk/nextjs";
 import { CiUser } from "react-icons/ci";
 
 export const Pfp = () => {
   return (
     <>
-      <Popover>
-        <PopoverTrigger asChild>
-          <div className="p-3 bg-red-500 rounded-full cursor-pointer">
+      <SignedOut>
+        <SignInButton>
+          <button className="p-3 bg-red-500 rounded-full">
             <CiUser className="text-xl text-primary-foreground" />
-          </div>
-        </PopoverTrigger>
-        <PopoverContent>
-          <div className="text-center">email@email.com</div>
-          <div className="justify-self-center">
-            <Button className="text-center">Sign out</Button>
-          </div>
-        </PopoverContent>
-      </Popover>
+          </button>
+        </SignInButton>
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
     </>
   );
 };
