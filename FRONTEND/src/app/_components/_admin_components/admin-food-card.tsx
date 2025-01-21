@@ -41,6 +41,7 @@ import {
   useRouter,
 } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@clerk/nextjs";
 type Props = {
   categoryId: string;
   categoryName: string;
@@ -48,6 +49,7 @@ type Props = {
 
 configDotenv();
 export default function AdminCard({ categoryId, categoryName }: Props) {
+  const { getToken } = useAuth();
   const path = usePathname();
   // add states
   const searchParams = useSearchParams();
@@ -63,6 +65,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   const [price, setPrice] = useState<number>(1);
   // edit states
   const [getFoodId, setFoodId] = useState<string>("");
+  const [token, setToken] = useState<string>("");
   // const [changeCategory, setEditCategory] = useState("");
   const [ref, refresh] = useState(0);
   const [form, setForm] = useState({
@@ -82,6 +85,13 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       ingredients: "",
       category: "",
     });
+    const fetchToken = async () => {
+      const token = await getToken();
+      if (token) {
+        setToken(token);
+      }
+    };
+    fetchToken();
   }, []);
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -101,6 +111,9 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
     const fetchData = async () => {
       const recCate = await fetch(`http://localhost:5000/food/${categoryId}`, {
         method: "GET",
+        headers: {
+          auth: token,
+        },
       });
       const categorizedFoods: Food[] = await recCate.json();
       setFoods(categorizedFoods);
@@ -111,6 +124,9 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
     const fetchData = async () => {
       const recCate = await fetch(`http://localhost:5000/foodCategory`, {
         method: "GET",
+        headers: {
+          auth: token,
+        },
       });
       const categories: Dish[] = await recCate.json();
       setAllCategory(categories);
@@ -123,6 +139,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        auth: token,
       },
       body: JSON.stringify(form),
     });
@@ -136,6 +153,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        auth: token,
       },
     });
     const response = recCate.json();
@@ -147,6 +165,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        auth: token,
       },
       body: JSON.stringify({
         ...form,
@@ -192,7 +211,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
     const field = e.target.name;
     const newVlue = { ...form, [field]: value, image: image };
     setForm(newVlue);
-    console.log(form);
+    // console.log(token);
   };
 
   const isValid = () => {
@@ -223,8 +242,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               category: categoryId,
             });
           }}
-          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
-        >
+          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center">
           <div>
             <Image
               src={`/img/add-new-button.png`}
@@ -306,8 +324,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                 }}
                 className={`bg-foreground px-5 p-2 text-secondary rounded-lg ${
                   !isValid() ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
+                }`}>
                 Save
               </Button>
             </DialogClose>
@@ -318,8 +335,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500"
-        >
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500">
           {/* edit dialog here */}
 
           <Dialog>
@@ -333,8 +349,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                   category: food.category,
                 });
               }}
-              className=""
-            >
+              className="">
               <div>
                 <Image
                   className="absolute top-1/2 right-4 border border-border rounded-full shadow-lg"
@@ -375,8 +390,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       onChange={(e) => {
                         onChangeForm(e);
                         console.log(form);
-                      }}
-                    >
+                      }}>
                       {categories.map((cate) => (
                         <option
                           // onClick={() => {
@@ -385,8 +399,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                           // }}
                           key={cate._id}
                           value={`${cate._id}`}
-                          className="text-foreground bg-background"
-                        >
+                          className="text-foreground bg-background">
                           {cate.name}
                         </option>
                       ))}
@@ -436,8 +449,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       deleteFood();
                     }}
                     href={path + "?" + searchParams}
-                    className=" px-5 p-2 text-foreground"
-                  >
+                    className=" px-5 p-2 text-foreground">
                     <MdDeleteForever className="text-red-600 text-3xl" />
                   </Link>
                 </DialogFooter>
@@ -462,8 +474,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       }}
                       className={`px-5 bg-foreground p-2 text-secondary ${
                         !isValid && `cursor-not-allowed bg-muted`
-                      }`}
-                    >
+                      }`}>
                       Save
                     </Button>
                   </DialogClose>

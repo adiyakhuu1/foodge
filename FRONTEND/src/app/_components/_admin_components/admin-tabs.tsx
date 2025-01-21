@@ -1,12 +1,3 @@
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import Card from "./admin-food-card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -15,8 +6,8 @@ import AdminCategory from "./admin-category-badge";
 import React, { Suspense } from "react";
 import AddCategory from "./admin-add-category";
 import { DeleteButton, TableCard } from "../orders-table-cards";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
+import Orders from "@/app/admin/orders/orders";
+import { useAuth } from "@clerk/nextjs";
 
 export type Dish = {
   name: string;
@@ -80,9 +71,9 @@ export default async function Tabs(props: Props) {
                 </div>
               </div>
             </div>
-            <Table>
+            {/* <Table>
               {/* <TableCaption>The caption</TableCaption> */}
-              <TableHeader className="bg-secondary">
+            {/*} <TableHeader className="bg-secondary">
                 <TableRow>
                   <TableHead>
                     <div className="p-4 w-[4%]">
@@ -107,7 +98,8 @@ export default async function Tabs(props: Props) {
                 <TableCard />
                 <TableCard />
               </TableBody>
-            </Table>
+            </Table> */}
+            <Orders />
           </div>
         </div>
       </>
@@ -125,8 +117,7 @@ export default async function Tabs(props: Props) {
                     !categoryFromProps
                       ? `border-red-500 border`
                       : `border-border rounded-full`
-                  }  py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background`}
-                >
+                  }  py-1 px-3 font-bold text-sm bg-background text-foreground hover:text-background`}>
                   All dishes ({Foods.length})
                 </Badge>
               </Link>
@@ -153,8 +144,7 @@ export default async function Tabs(props: Props) {
           FoodCategory.map((categor: Dish, index: number) => (
             <div
               key={categor._id}
-              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
-            >
+              className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 ">
               <div className="text-foreground text-xl font-extrabold flex justify-between">
                 <div>
                   {index + 1 + ". "}
@@ -178,8 +168,7 @@ export default async function Tabs(props: Props) {
               return (
                 <div
                   key={categor._id}
-                  className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 "
-                >
+                  className="w-full h-[600px] bg-background flex flex-col gap-3 overflow-scroll scrollbar-none p-4 ">
                   <div className="text-foreground text-xl flex justify-between font-extrabold ">
                     <div>
                       {index + 1 + ". "}

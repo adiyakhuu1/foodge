@@ -10,20 +10,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function AddCategory() {
+  const { getToken } = useAuth();
+
   const [name, setName] = useState<string>("");
+  const [token, setToken] = useState<string>("");
   const path = usePathname();
   const searchParams = useSearchParams();
   const handleClick = async () => {
     const res = await fetch(`http://localhost:5000/FoodCategory/addnew`, {
       method: "POST",
       headers: {
-        Accept: "application/json",
+        auth: token,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -33,6 +37,15 @@ export default function AddCategory() {
     const response = await res.json();
     console.log(response);
   };
+  useEffect(() => {
+    const dosomething = async () => {
+      const token: string | null = await getToken();
+      if (token) {
+        setToken(token);
+      }
+    };
+    dosomething();
+  }, []);
   return (
     <Dialog>
       <DialogTrigger>
@@ -67,8 +80,7 @@ export default function AddCategory() {
               className="bg-foreground text-background flex p-3 rounded-xl"
               onClick={() => {
                 handleClick();
-              }}
-            >
+              }}>
               Save Changes
             </Button>
           </DialogClose>
