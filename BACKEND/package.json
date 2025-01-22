@@ -11,6 +11,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@clerk/backend": "^1.23.4",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
     "cloudinary": "^2.5.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -20,6 +23,7 @@
     "nodemon": "^3.1.9"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.5",

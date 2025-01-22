@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Dish, Food } from "./admin-tabs";
+// import { Dish, Food } from "/_admin_components/admin-tabs.tsx";
+import { Dish, Food } from "./_admin_components/admin-tabs";
 import {
   Dialog,
   DialogClose,
@@ -189,7 +190,7 @@ function Card({ categoryId, categoryName }: Props) {
               onClick={() => {
                 addnewitem();
               }}
-              href={`/admin?page=food menu`}
+              href={`/admin?page=food+menu`}
               className="bg-foreground px-5 p-2 text-secondary"
             >
               <div>Save</div>
@@ -305,7 +306,7 @@ function Card({ categoryId, categoryName }: Props) {
                     onClick={() => {
                       deleteFood();
                     }}
-                    href={`/admin?page=food menu`}
+                    href={`/admin?page=food+menu`}
                     className=" px-5 p-2 text-foreground"
                   >
                     <MdDeleteForever className="text-red-600 text-3xl" />
@@ -316,7 +317,7 @@ function Card({ categoryId, categoryName }: Props) {
                     onClick={() => {
                       edititem();
                     }}
-                    href={`/admin?page=food menu`}
+                    href={`/admin?page=food+menu`}
                     className="bg-foreground px-5 p-2 text-secondary"
                   >
                     Save
