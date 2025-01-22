@@ -61,6 +61,7 @@ const FoodOrderItem = new mongoose.Schema({
 app.use("/FoodCategory", FoodCategoryRouter);
 app.use("/food", foodRouter);
 app.use("/account", accountRouter);
+app.use("/foodOrder", accountRouter);
 
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);

@@ -33,7 +33,7 @@ export default function Navigaion() {
               <SheetHeader>
                 <SheetTitle>Title</SheetTitle>
 
-                <SheetDescription>Description</SheetDescription>
+                <SheetDescription>{/* <CartItems /> */}</SheetDescription>
               </SheetHeader>
             </SheetContent>
           </Sheet>

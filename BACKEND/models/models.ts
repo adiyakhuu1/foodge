@@ -82,8 +82,13 @@ export const foodCategory_model = mongoose.model(
 );
 export const food_model = mongoose.model("food", food, "foods");
 export const account_model = mongoose.model("user", user, "users");
+export const FoodOrder_model = mongoose.model(
+  "FoodOrder",
+  FoodOrder,
+  "foodorders"
+);
 export const FoodOrderItem_model = mongoose.model(
   "FoodOrderItem",
-  user,
+  FoodOrderItem,
   "foodorderitems"
 );

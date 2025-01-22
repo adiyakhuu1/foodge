@@ -1,20 +1,25 @@
-import { Create } from "./_components/create";
-import { Delete } from "./_components/delete";
-import { Edit } from "./_components/edit";
-export type category = {
-  _id: number;
-  name: string;
+import React, { createContext, useContext, useState } from "react";
+
+type Order = {
+  food: string;
+  quantity: number;
 };
-export default async function Home() {
-  const res = await fetch(`http://localhost:5000/FoodCategory`);
-  const data = await res.json();
-  console.log(data);
+
+type CartContextType = {
+  order: Order[];
+  setOrder: Function;
+};
+
+export const CartContext = createContext<CartContextType | undefined>(
+  undefined
+);
+
+export const CartProvider = ({ children }: { children: React.ReactNode }) => {
+  const [order, setOrder] = useState<Order[]>([]);
 
   return (
-    <div className="flex flex-col gap-8">
-      <Create />
-
-      <Delete data={data} />
-    </div>
+    <CartContext.Provider value={{ order, setOrder }}>
+      {children}
+    </CartContext.Provider>
   );
-}
+};

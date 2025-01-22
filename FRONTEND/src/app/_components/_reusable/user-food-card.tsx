@@ -20,6 +20,11 @@ type Props = {
   categoryId: string;
   categoryName: string;
 };
+type Order = {
+  food: string;
+  quantity: number;
+};
+
 export default function UserFoodCard({ categoryId, categoryName }: Props) {
   // add states
   const [foods, setFoods] = useState<Food[]>([]);
@@ -34,7 +39,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   const [getFoodId, setFoodId] = useState<string>("");
   const [changeCategory, setEditCategory] = useState("");
   const [count, setCount] = useState<number>(1);
-  const [order, setOrder] = useState<string[]>([]);
+  const [order, setOrder] = useState<Order[]>([]);
   const [ref, refresh] = useState(0);
 
   const handleSelectedFoods = () => {};
@@ -59,12 +64,14 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
     };
     fetchData();
   }, [ref]);
+
   return (
     <>
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl">
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl"
+        >
           {/* edit dialog here */}
           <Dialog>
             <DialogTrigger
@@ -78,7 +85,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                 console.log(order);
                 // selectedFood(food);
               }}
-              className="">
+              className=""
+            >
               <div>
                 <GoPlus className="absolute top-[40%] bg-background right-4 text-red-500 text-xs w-10 h-10 rounded-full shadow-lg" />
               </div>
@@ -123,7 +131,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         onClick={() => {
                           setCount((p) => p - 1);
                           console.log(count);
-                        }}>
+                        }}
+                      >
                         -
                       </Button>
                       {count}
@@ -132,7 +141,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         onClick={() => {
                           setCount((p) => p + 1);
                           console.log(count);
-                        }}>
+                        }}
+                      >
                         +
                       </Button>
                     </div>
@@ -141,10 +151,14 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                     <DialogClose asChild>
                       <Button
                         onClick={() => {
-                          setOrder([...order, food._id]);
+                          setOrder([
+                            ...order,
+                            { food: food._id, quantity: count },
+                          ]);
                           console.log(order);
                         }}
-                        className="w-full rounded-lg bg-primary">
+                        className="w-full rounded-lg bg-primary"
+                      >
                         Add to cart
                       </Button>
                     </DialogClose>

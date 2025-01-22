@@ -15,6 +15,7 @@ export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [nextStep, setStep] = useState<boolean>(false);
+
   let errors = {
     mail: "",
     password: "",
@@ -38,8 +39,19 @@ export default function Login() {
     return isValid;
   };
 
-  const handleSignInOrUp = async () => {
-    const res = await fetch(`http://localhost:5000/account/sign`, {
+  const handleSignUp = async () => {
+    const res = await fetch(`http://localhost:5000/account/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    console.log(data);
+  };
+  const handleSignIn = async () => {
+    const res = await fetch(`http://localhost:5000/account/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +97,7 @@ export default function Login() {
               e.preventDefault();
             }
           }}
-          href={`/account?page=2`}
+          href={`/signup?page=2`}
         >
           <Button
             disabled={!isValidStep1()}
@@ -134,7 +146,7 @@ export default function Login() {
       </div>
       <div>
         <Button
-          onClick={handleSignInOrUp}
+          onClick={handleSignUp}
           disabled={!isValidStep2()}
           className={`w-full ${
             !isValidStep2()
@@ -147,7 +159,7 @@ export default function Login() {
       </div>
       <div className="flex justify-center gap-4">
         <p className="text-muted-foreground">Already have an account?</p>
-        <Link href={`/`} className="text-blue-500 bg-none">
+        <Link href={`/signin`} className="text-blue-500 bg-none">
           Log in
         </Link>
       </div>
