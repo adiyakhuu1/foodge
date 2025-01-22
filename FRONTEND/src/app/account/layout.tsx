@@ -27,22 +27,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className} ${inter.className}`}>
-        <div className="flex items-center min-h-screen w-full justify-around">
-          <div className="w-6/12 justify-items-center">{children}</div>
-          <div className="min-h-screen w-full overflow-hidden content-center box-border justify-items-center">
-            <Image
-              src={`/img/deliver.jpg`}
-              alt="deliver"
-              width={1000}
-              height={1000}
-              objectFit="cover"
-            />
-          </div>
-        </div>
-      </body>
-    </html>
+    <div
+      className={`flex items-center min-h-screen w-full justify-around ${inter.className}`}
+    >
+      <div className="w-6/12 justify-items-center">{children}</div>
+      <div className="min-h-screen w-full overflow-hidden content-center box-border justify-items-center">
+        <Image
+          src={`/img/deliver.jpg`}
+          alt="deliver"
+          width={1000}
+          height={1000}
+          objectFit="cover"
+        />
+      </div>
+    </div>
   );
 }

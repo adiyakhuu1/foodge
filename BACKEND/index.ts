@@ -7,6 +7,7 @@ const port = 5000;
 import mongoose, { mongo } from "mongoose";
 import { FoodCategoryRouter } from "./router/food-category";
 import { foodRouter } from "./router/food";
+import { accountRouter } from "./router/accountRouter";
 configDotenv();
 const URI = process.env.NEXT_PUBLIC_DB_PASSWORD;
 const app = express();
@@ -59,6 +60,7 @@ const FoodOrderItem = new mongoose.Schema({
 
 app.use("/FoodCategory", FoodCategoryRouter);
 app.use("/food", foodRouter);
+app.use("/account", accountRouter);
 
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
