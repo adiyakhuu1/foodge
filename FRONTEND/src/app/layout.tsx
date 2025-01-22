@@ -4,7 +4,6 @@ import "./globals.css";
 import { ThemeProvider } from "./_components/theme-provider";
 import { Suspense } from "react";
 import { ClerkProvider } from "@clerk/nextjs";
-import { CartProvider } from "./test/page";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,9 +32,7 @@ export default function RootLayout({
       >
         <Suspense>
           <ClerkProvider>
-            <CartProvider>
-              <ThemeProvider>{children}</ThemeProvider>
-            </CartProvider>
+            <ThemeProvider>{children}</ThemeProvider>
           </ClerkProvider>
         </Suspense>
       </body>
