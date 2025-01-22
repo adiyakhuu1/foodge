@@ -8,6 +8,7 @@ import AddCategory from "./admin-add-category";
 import { DeleteButton, TableCard } from "../orders-table-cards";
 import Orders from "@/app/admin/orders/orders";
 import { useAuth } from "@clerk/nextjs";
+import { useFetchDatas } from "@/app/_utils/fetchData";
 
 export type Dish = {
   name: string;
@@ -28,6 +29,7 @@ type Props = {
   category: string;
 };
 export default async function Tabs(props: Props) {
+  // const { foods, FoodCategory1, loading } = useFetchDatas();
   const { page } = props;
   const categoryFromProps = props.category;
   const res = await fetch(`http://localhost:5000/FoodCategory`);
@@ -36,6 +38,10 @@ export default async function Tabs(props: Props) {
   const Foods = await res2.json();
   let oneC;
 
+  // if (loading) {
+  //   return <div>Loading</div>;
+  // }
+  // const allFoodCategory = useFetchDatas();
   if (categoryFromProps) {
     try {
       const res4 = await fetch(

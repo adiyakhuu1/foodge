@@ -39,7 +39,7 @@ export default function AddCategory() {
   };
   useEffect(() => {
     const dosomething = async () => {
-      const token: string | null = await getToken();
+      const token = await getToken();
       if (token) {
         setToken(token);
       }
