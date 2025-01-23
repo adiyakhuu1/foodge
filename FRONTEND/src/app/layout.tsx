@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "./_components/theme-provider";
 import { Suspense } from "react";
 import { ClerkProvider } from "@clerk/nextjs";
+import { CartProvider } from "./OrderContext";
+import { FoodsProvider } from "./FoodInfoContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,9 +33,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className}`}
       >
         <Suspense>
-          <ClerkProvider>
-            <ThemeProvider>{children}</ThemeProvider>
-          </ClerkProvider>
+          <FoodsProvider>
+            <CartProvider>
+              <ClerkProvider>
+                <ThemeProvider>{children}</ThemeProvider>
+              </ClerkProvider>
+            </CartProvider>
+          </FoodsProvider>
         </Suspense>
       </body>
     </html>

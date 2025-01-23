@@ -16,6 +16,8 @@ import { GoPlus } from "react-icons/go";
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Pfp } from "./pfp";
+import { useCartContext } from "@/app/OrderContext";
+import { useFoodContext } from "@/app/FoodInfoContext";
 type Props = {
   categoryId: string;
   categoryName: string;
@@ -26,10 +28,13 @@ type Order = {
 };
 
 export default function UserFoodCard({ categoryId, categoryName }: Props) {
+  const { order, setOrder } = useCartContext();
+  const { foodsInfo, setFoodsInfo } = useFoodContext();
   // add states
   const [foods, setFoods] = useState<Food[]>([]);
   const [foodName, setFoodName] = useState<string>("");
   const [ingredients, setIngre] = useState<string>("");
+  const [image, setImage] = useState<string>("");
   const [chooseCate, setCategory] = useState<string>("");
   const [categories, setAllCategory] = useState<Dish[]>([]);
   const [selected, selectedFood] = useState({});
@@ -39,7 +44,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   const [getFoodId, setFoodId] = useState<string>("");
   const [changeCategory, setEditCategory] = useState("");
   const [count, setCount] = useState<number>(1);
-  const [order, setOrder] = useState<Order[]>([]);
+  // const [order, setOrder] = useState<Order[]>([]);
   const [ref, refresh] = useState(0);
 
   const handleSelectedFoods = () => {};
@@ -81,6 +86,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                 setFoodName(food.foodName);
                 setIngre(food.ingredients);
                 setPrice(food.price);
+                setImage(food.image);
                 setCount(1);
                 console.log(order);
                 // selectedFood(food);
@@ -154,6 +160,16 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                           setOrder([
                             ...order,
                             { food: food._id, quantity: count },
+                          ]);
+                          setFoodsInfo([
+                            ...foodsInfo,
+                            {
+                              _id: getFoodId,
+                              foodName: foodName,
+                              price: price,
+                              ingredients: ingredients,
+                              image: image,
+                            },
                           ]);
                           console.log(order);
                         }}
