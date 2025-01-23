@@ -29,6 +29,15 @@ foodRouter.get("/:category", async (req: Request, res: Response) => {
   const result = await food_model.find(params);
   res.json(result);
 });
+foodRouter.get("/:foodId", async (req: Request, res: Response) => {
+  if (!req.params) {
+    res.json({ message: "no params" });
+    return;
+  }
+  const params = req.params;
+  const result = await food_model.find(params);
+  res.json(result);
+});
 foodRouter.put("/:_id", async (req: Request, res: Response) => {
   const params = req.params;
   const body = req.body;

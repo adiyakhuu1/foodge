@@ -32,24 +32,35 @@ const user = new mongoose.Schema(
   {
     email: { type: String },
     password: { type: String },
+    phoneNumber: { type: Number, default: 99321351 },
+    address: {
+      type: String,
+      default: "narantuul",
+    },
     role: {
       type: String,
       enum: Object.values(userRole),
       default: userRole.USER,
     },
+    orderedFoods: { type: [mongoose.Schema.Types.ObjectId] },
     isVerified: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 //FoodOrderItem schema
 
-const FoodOrderItem = new mongoose.Schema({
-  food: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "food",
+const FoodOrderItem = new mongoose.Schema(
+  {
+    food: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "food",
+    },
+    quantity: Number,
   },
-  quantity: Number,
-});
+  {
+    timestamps: true,
+  }
+);
 
 // FoodOrder schema
 
@@ -60,10 +71,8 @@ const FoodOrder = new mongoose.Schema(
       ref: "user",
     },
     totalPrice: Number,
-    FoodOrderItems: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "FoodOrderItem",
-    },
+    foodOrderItems: [FoodOrderItem],
+
     status: {
       type: String,
       enum: Object.values(foodOrderStatus),
