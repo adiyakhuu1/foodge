@@ -17,14 +17,47 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { cartContext, useCartContext } from "../OrderContext";
 import { useFoodContext } from "../FoodInfoContext";
 import Image from "next/image";
+import { Input } from "@/components/ui/input";
 export default function Navigaion() {
   const [count, setCount] = useState(1);
   const { order } = useCartContext();
   const { foodsInfo } = useFoodContext();
+  // const [totalPrice, setTotalPrice] = useState<number>();
+
+  const changedOrder = order;
+
+  const calculateTotalPrice = (): number => {
+    const multiple = foodsInfo.reduce((prev, food, index) => {
+      prev += food.price * order[index].quantity;
+      // setTotalPrice(prev);
+      return prev;
+    }, 0);
+    return multiple;
+  };
+  const totalPrice = calculateTotalPrice();
+  const [form, setForm] = useState({
+    user: "6790faf5cdb6003ef8c1d918",
+    totalPrice: totalPrice,
+    foodOrderItems: order,
+    status: "PENDING",
+  });
+
+  const addOrder = async () => {
+    console.log("form", form);
+    console.log("order", order);
+    const senddata = await fetch(`http://localhost:5000/foodOrder`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+  };
+
   return (
     <div className="bg-primary h-17 w-full justify-items-center">
       <div className="flex items-center justify-between w-[90%]">
@@ -40,54 +73,79 @@ export default function Navigaion() {
             <SheetContent>
               <SheetHeader>
                 <SheetTitle>My Cart</SheetTitle>
-
-                {foodsInfo.map((food) => (
-                  <div
-                    key={food._id}
-                    className="h-40 w-full bg-secondary flex gap-2 items-center"
-                  >
-                    <div className="w-[129px] h-[129px] content-center">
-                      <Image
-                        className="w-[350px] h-[125px] bg-cover bg-center rounded-xl"
-                        src={
-                          food.image
-                            ? food.image
-                            : `https://www.foodandwine.com/thmb/bT5-sIRTEMDImFAqBmEAzG5T5A4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/classic-cheese-pizza-FT-RECIPE0422-31a2c938fc2546c9a07b7011658cfd05.jpg`
-                        }
-                        priority={false}
-                        width={1500}
-                        height={1000}
-                        alt="foodpic"
-                      />
-                    </div>
-                    <div className="w-2/3 font-bold flex flex-col justify-between gap-4">
-                      <div>
-                        <div className="text-red-500">{food.foodName}</div>
-                        <div className="h-12 truncate text-xs">
-                          {food.ingredients}
+                <div className=" relative">
+                  <div>
+                    {foodsInfo.map((food, index) => (
+                      <div
+                        key={food._id}
+                        className="h-40 w-full bg-secondary flex gap-2 items-center">
+                        <div className="w-[129px] h-[129px] content-center">
+                          <Image
+                            className="w-[350px] h-[125px] bg-cover bg-center rounded-xl"
+                            src={
+                              food.image
+                                ? food.image
+                                : `https://www.foodandwine.com/thmb/bT5-sIRTEMDImFAqBmEAzG5T5A4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/classic-cheese-pizza-FT-RECIPE0422-31a2c938fc2546c9a07b7011658cfd05.jpg`
+                            }
+                            priority={false}
+                            width={1500}
+                            height={1000}
+                            alt="foodpic"
+                          />
                         </div>
-                      </div>
-                      <div className="flex justify-around">
-                        <div className="flex gap-7">
-                          <div
+                        <div className="w-2/3 font-bold flex flex-col justify-between gap-4">
+                          <div>
+                            <div className="text-red-500">{food.foodName}</div>
+                            <div className="h-12 truncate text-xs">
+                              {food.ingredients}
+                            </div>
+                          </div>
+                          <div className="flex justify-around">
+                            <div className="flex gap-3">
+                              {/* <div
                             className=" cursor-pointer"
-                            onClick={() => setCount((p) => p - 1)}
-                          >
+                            onClick={() => setCount((p) => p - 1)}>
                             -
-                          </div>
-                          <div>{count}</div>
-                          <div
+                          </div> */}
+                              <button
+                                onClick={() => {
+                                  changedOrder[index].quantity -= 1;
+                                  console.log(changedOrder[index].quantity);
+                                  setCount(count + 1);
+                                }}>
+                                -
+                              </button>
+                              <Input
+                                readOnly
+                                className="w-14 h-10"
+                                type="number"
+                                value={changedOrder[index].quantity}
+                              />
+                              <button
+                                onClick={() => {
+                                  changedOrder[index].quantity += 1;
+                                  console.log(changedOrder[index].quantity);
+                                  setCount(count + 1);
+                                }}>
+                                +
+                              </button>
+                              {/* <div
                             className=" cursor-pointer"
-                            onClick={() => setCount((p) => p + 1)}
-                          >
+                            onClick={() => setCount((p) => p + 1)}>
                             +
+                          </div> */}
+                            </div>
+                            <div>${food.price}</div>
                           </div>
                         </div>
-                        <div>${food.price}</div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+                <div className=" absolute bottom-0">
+                  <div>{totalPrice}</div>
+                </div>
+                <button onClick={addOrder}>Send</button>
               </SheetHeader>
             </SheetContent>
           </Sheet>

@@ -97,16 +97,14 @@ export default function Login() {
               e.preventDefault();
             }
           }}
-          href={`/signup?page=2`}
-        >
+          href={`/signup?page=2`}>
           <Button
             disabled={!isValidStep1()}
             className={`w-full ${
               !isValidStep1()
                 ? `bg-muted-foreground cursor-not-allowed text-foreground`
                 : ``
-            }`}
-          >
+            }`}>
             Let's go
           </Button>
         </Link>
@@ -121,7 +119,7 @@ export default function Login() {
   ) : (
     <div className="w-4/5 flex flex-col gap-4">
       <div>
-        <Link href={`/account`}>
+        <Link href={`/signup`}>
           <ArrowLeftIcon />
         </Link>
       </div>
@@ -152,8 +150,7 @@ export default function Login() {
             !isValidStep2()
               ? `bg-muted-foreground cursor-not-allowed text-foreground`
               : ``
-          }`}
-        >
+          }`}>
           Let's go
         </Button>
       </div>

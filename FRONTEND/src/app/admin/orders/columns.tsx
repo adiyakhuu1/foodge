@@ -6,12 +6,13 @@ import { ColumnDef } from "@tanstack/react-table";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Order = {
-  customer: string;
+  user: string;
   food: string;
   date: number;
-  total: number;
+  totalPrice: number;
   address: string;
   status: "PENDING" | "CANCELED" | "DELIVERED";
+  createdAt: Date;
 };
 
 export const columns: ColumnDef<Order>[] = [
@@ -38,19 +39,19 @@ export const columns: ColumnDef<Order>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "customer",
+    accessorKey: "user",
     header: "Custumor",
   },
   {
-    accessorKey: "food",
+    accessorKey: "foodOrderItems",
     header: "Food",
   },
   {
-    accessorKey: "date",
+    accessorKey: "createdAt",
     header: "Date",
   },
   {
-    accessorKey: "total",
+    accessorKey: "totalPrice",
     header: "Total",
   },
   {
