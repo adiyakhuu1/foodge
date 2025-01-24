@@ -39,12 +39,15 @@ export default function Navigaion() {
     return multiple;
   };
   const totalPrice = calculateTotalPrice();
-  const [form, setForm] = useState({
-    user: "6790faf5cdb6003ef8c1d918",
+  // const [form, setForm] = useState({
+
+  // });
+  const form = {
+    user: "6792f9a355462193bf838df9",
     totalPrice: totalPrice,
     foodOrderItems: order,
     status: "PENDING",
-  });
+  };
 
   const addOrder = async () => {
     console.log("form", form);
@@ -56,6 +59,8 @@ export default function Navigaion() {
       },
       body: JSON.stringify(form),
     });
+    const response = await senddata.json();
+    console.log("response from backend", response);
   };
 
   return (
@@ -78,7 +83,8 @@ export default function Navigaion() {
                     {foodsInfo.map((food, index) => (
                       <div
                         key={food._id}
-                        className="h-40 w-full bg-secondary flex gap-2 items-center">
+                        className="h-40 w-full bg-secondary flex gap-2 items-center"
+                      >
                         <div className="w-[129px] h-[129px] content-center">
                           <Image
                             className="w-[350px] h-[125px] bg-cover bg-center rounded-xl"
@@ -112,7 +118,8 @@ export default function Navigaion() {
                                   changedOrder[index].quantity -= 1;
                                   console.log(changedOrder[index].quantity);
                                   setCount(count + 1);
-                                }}>
+                                }}
+                              >
                                 -
                               </button>
                               <Input
@@ -126,7 +133,8 @@ export default function Navigaion() {
                                   changedOrder[index].quantity += 1;
                                   console.log(changedOrder[index].quantity);
                                   setCount(count + 1);
-                                }}>
+                                }}
+                              >
                                 +
                               </button>
                               {/* <div

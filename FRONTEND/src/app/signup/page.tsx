@@ -15,6 +15,7 @@ export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [nextStep, setStep] = useState<boolean>(false);
+  const [response, setResponse] = useState<string>("");
 
   let errors = {
     mail: "",
@@ -48,7 +49,8 @@ export default function Login() {
       body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
-    console.log(data);
+    setResponse(data.message);
+    console.log(response);
   };
   const handleSignIn = async () => {
     const res = await fetch(`http://localhost:5000/account/signup`, {
@@ -97,14 +99,16 @@ export default function Login() {
               e.preventDefault();
             }
           }}
-          href={`/signup?page=2`}>
+          href={`/signup?page=2`}
+        >
           <Button
             disabled={!isValidStep1()}
             className={`w-full ${
               !isValidStep1()
                 ? `bg-muted-foreground cursor-not-allowed text-foreground`
                 : ``
-            }`}>
+            }`}
+          >
             Let's go
           </Button>
         </Link>
@@ -141,6 +145,7 @@ export default function Login() {
       </div>
       <div className="text-red-600 text-sm">
         {!isValidStep2() && errors.password}
+        {response && response}
       </div>
       <div>
         <Button
@@ -150,7 +155,8 @@ export default function Login() {
             !isValidStep2()
               ? `bg-muted-foreground cursor-not-allowed text-foreground`
               : ``
-          }`}>
+          }`}
+        >
           Let's go
         </Button>
       </div>
