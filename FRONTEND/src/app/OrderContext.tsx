@@ -1,14 +1,14 @@
 "use client";
 import { error } from "console";
 import { createContext, SetStateAction, useContext, useState } from "react";
-type Order = {
+export type foodOrderItems = {
   food: string;
   quantity: number;
 };
 
 type cartContextType = {
-  order: Order[];
-  setOrder: React.Dispatch<SetStateAction<Order[]>>;
+  order: foodOrderItems[];
+  setOrder: React.Dispatch<SetStateAction<foodOrderItems[]>>;
 };
 export const cartContext = createContext<cartContextType | null>(null);
 
@@ -17,7 +17,7 @@ export const CartProvider = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const [order, setOrder] = useState<Order[]>([]);
+  const [order, setOrder] = useState<foodOrderItems[]>([]);
   return (
     <cartContext.Provider value={{ order, setOrder }}>
       {children}

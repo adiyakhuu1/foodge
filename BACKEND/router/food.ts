@@ -1,4 +1,4 @@
-import express, { Response, Request } from "express";
+import express, { Response, Request, NextFunction } from "express";
 import { Router } from "express";
 import { food_model } from "../models/models";
 import { exists } from "fs";
@@ -6,12 +6,23 @@ import { error } from "console";
 import { verifyToken } from "@clerk/backend";
 
 export const foodRouter = Router();
-
+const auth = async (req: Request, res: Response, next: NextFunction) => {
+  const token = req.get("auth");
+  if (token) {
+    await verifyToken(token, {
+      secretKey: process.env.CLERK_SECRET_KEY,
+    });
+    next();
+    return;
+  }
+  console.log("no");
+  res.json({ message: "no" });
+};
 foodRouter.get("/", async (req: Request, res: Response) => {
   const result = await food_model.find();
   res.json(result);
 });
-foodRouter.delete("/:_id", async (req: Request, res: Response) => {
+foodRouter.delete("/:_id", auth, async (req: Request, res: Response) => {
   const params = req.params;
   try {
     await food_model.findByIdAndDelete(params);
@@ -38,33 +49,18 @@ foodRouter.get("/:foodId", async (req: Request, res: Response) => {
   const result = await food_model.find(params);
   res.json(result);
 });
-foodRouter.put("/:_id", async (req: Request, res: Response) => {
+foodRouter.put("/:_id", auth, async (req: Request, res: Response) => {
   const params = req.params;
   const body = req.body;
-  const token = req.get("auth");
-  try {
-    if (token) {
-      const veryified = await verifyToken(token, {
-        secretKey: process.env.CLERK_SECRET_KEY,
-      });
-    }
-    await food_model.findByIdAndUpdate(params, body);
-    console.log(params);
-    res.json(params);
-  } catch (err) {
-    console.log(err, "aldaa zaalaa");
-  }
+
+  const newchange = await food_model.findByIdAndUpdate(params, body);
+  console.log(newchange);
+  res.json(newchange);
 });
 
-foodRouter.post("/", async (req: Request, res: Response) => {
+foodRouter.post("/", auth, async (req: Request, res: Response) => {
   const body = req.body;
-  const token = req.get("auth");
   try {
-    if (token) {
-      const veryified = await verifyToken(token, {
-        secretKey: process.env.CLERK_SECRET_KEY,
-      });
-    }
     if (!body) {
       res.json({ message: "aldaa" });
     }
@@ -73,22 +69,5 @@ foodRouter.post("/", async (req: Request, res: Response) => {
     res.json(newitem);
   } catch (e) {
     console.error(e, "aldaa");
-  }
-});
-foodRouter.put("/testing/replaceall", async (req: Request, res: Response) => {
-  try {
-    const result = await food_model.updateMany(
-      { image: { $exists: true } },
-      { image: "" }
-    );
-    res.json({
-      message: "success",
-      result,
-    });
-  } catch (e) {
-    console.error(e, "error");
-    res.status(500).json({
-      message: "error 500",
-    });
   }
 });

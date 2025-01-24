@@ -166,7 +166,6 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                     <DialogClose asChild>
                       <Button
                         onClick={() => {
-                          handleClick();
                           setOrder([
                             ...order,
                             { food: food._id, quantity: count },

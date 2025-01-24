@@ -6,7 +6,7 @@ import { CiShoppingCart } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
 import { Pfp } from "./_reusable/pfp";
 import { Button } from "@/components/ui/button";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import DeliveryAddress from "./_reusable/delivery-address-button";
 import Cart from "./_reusable/cart-button";
 import {
@@ -24,9 +24,11 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 export default function Navigaion() {
   const [count, setCount] = useState(1);
+  const [token, setToken] = useState("");
   const { order } = useCartContext();
   const { foodsInfo } = useFoodContext();
   // const [totalPrice, setTotalPrice] = useState<number>();
+  const { getToken } = useAuth();
 
   const changedOrder = order;
 
@@ -40,10 +42,18 @@ export default function Navigaion() {
   };
   const totalPrice = calculateTotalPrice();
   // const [form, setForm] = useState({
-
+  useEffect(() => {
+    const dosomething = async () => {
+      const token = await getToken();
+      if (token) {
+        setToken(token);
+      }
+    };
+    dosomething();
+  }, []);
   // });
   const form = {
-    user: "6792f9a355462193bf838df9",
+    user: "67933be24b8118f8d9c34b34",
     totalPrice: totalPrice,
     foodOrderItems: order,
     status: "PENDING",
@@ -56,6 +66,7 @@ export default function Navigaion() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        auth: token,
       },
       body: JSON.stringify(form),
     });
@@ -83,8 +94,7 @@ export default function Navigaion() {
                     {foodsInfo.map((food, index) => (
                       <div
                         key={food._id}
-                        className="h-40 w-full bg-secondary flex gap-2 items-center"
-                      >
+                        className="h-40 w-full bg-secondary flex gap-2 items-center">
                         <div className="w-[129px] h-[129px] content-center">
                           <Image
                             className="w-[350px] h-[125px] bg-cover bg-center rounded-xl"
@@ -118,8 +128,7 @@ export default function Navigaion() {
                                   changedOrder[index].quantity -= 1;
                                   console.log(changedOrder[index].quantity);
                                   setCount(count + 1);
-                                }}
-                              >
+                                }}>
                                 -
                               </button>
                               <Input
@@ -133,8 +142,7 @@ export default function Navigaion() {
                                   changedOrder[index].quantity += 1;
                                   console.log(changedOrder[index].quantity);
                                   setCount(count + 1);
-                                }}
-                              >
+                                }}>
                                 +
                               </button>
                               {/* <div

@@ -10,9 +10,12 @@ enum foodOrderStatus {
   PENDING = "PENDING",
 }
 // Food category schema
-const foodcatSchema = new mongoose.Schema({
-  name: { type: String },
-});
+const foodcatSchema = new mongoose.Schema(
+  {
+    name: { type: String },
+  },
+  { timestamps: true }
+);
 // Food - Schema
 const food = new mongoose.Schema(
   {

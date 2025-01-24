@@ -10,11 +10,14 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Section from "./_reusable/section";
 import CategoryBadge from "./_reusable/category-badge";
+import { useAuth } from "@clerk/nextjs";
 
 export default function Categories() {
   const [categories, setCategories] = useState<Dish[]>([]);
+  const [token, setToken] = useState("");
   const searchParams = useSearchParams();
   const categoryFromParams: string | null = searchParams.get("category");
+  const { getToken } = useAuth();
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(`http://localhost:5000/FoodCategory`, {
@@ -24,6 +27,15 @@ export default function Categories() {
       setCategories(categories);
     };
     fetchData();
+  }, []);
+  useEffect(() => {
+    const dosomething = async () => {
+      const token = await getToken();
+      if (token) {
+        setToken(token);
+      }
+    };
+    dosomething();
   }, []);
 
   return (

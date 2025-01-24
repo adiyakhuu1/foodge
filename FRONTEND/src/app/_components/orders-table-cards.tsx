@@ -20,6 +20,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useAuth } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
 
 export const TableCard = () => {
   return (
@@ -60,20 +62,34 @@ export const TableCard = () => {
     </TableRow>
   );
 };
-const deleteCategory = async (id: string) => {
-  await fetch(`http://localhost:5000/FoodCategory/${id}`, {
-    method: "DELETE",
-  });
-};
 
 type deletebuttonprops = {
   categor: Dish;
 };
 export const DeleteButton = (props: deletebuttonprops) => {
+  const [token, setToken] = useState("");
+  const { getToken } = useAuth();
+  useEffect(() => {
+    const dosomething = async () => {
+      const token = await getToken();
+      if (token) {
+        setToken(token);
+      }
+    };
+    dosomething();
+  }, []);
   const { categor } = props;
   const path = usePathname();
   const searchParams = useSearchParams();
   console.log(path + searchParams);
+  const deleteCategory = async (id: string) => {
+    await fetch(`http://localhost:5000/FoodCategory/${id}`, {
+      method: "DELETE",
+      headers: {
+        auth: token,
+      },
+    });
+  };
   return (
     <>
       <Dialog>
@@ -94,21 +110,18 @@ export const DeleteButton = (props: deletebuttonprops) => {
           <div className="flex justify-center gap-10">
             <DialogClose
               className="text-red-500 border border-border bg-secondary px-10 p-2 rounded-lg content-center"
-              asChild
-            >
+              asChild>
               <Link
                 onClick={() => {
                   deleteCategory(categor._id);
                 }}
-                href={path + "?page=food+menu"}
-              >
+                href={path + "?page=food+menu"}>
                 YES
               </Link>
             </DialogClose>
             <DialogClose
               className="text-background border border-border bg-foreground px-10 p-2 rounded-lg cursor-pointer"
-              asChild
-            >
+              asChild>
               <div>NO</div>
             </DialogClose>
           </div>

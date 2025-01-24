@@ -1,5 +1,6 @@
 "use client";
 
+import { foodOrderItems } from "@/app/OrderContext";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -7,7 +8,7 @@ import { ColumnDef } from "@tanstack/react-table";
 // You can use a Zod schema here if you want.
 export type Order = {
   user: string;
-  food: string;
+  food: foodOrderItems[];
   date: number;
   totalPrice: number;
   address: string;
@@ -39,11 +40,11 @@ export const columns: ColumnDef<Order>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "user",
+    accessorKey: "user.email",
     header: "Custumor",
   },
   {
-    accessorKey: "foodOrderItems",
+    accessorKey: "foodOrderItems.length",
     header: "Food",
   },
   {

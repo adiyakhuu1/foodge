@@ -27,8 +27,8 @@ export default function AddCategory() {
     const res = await fetch(`http://localhost:5000/FoodCategory/addnew`, {
       method: "POST",
       headers: {
-        auth: token,
         "Content-Type": "application/json",
+        auth: token,
       },
       body: JSON.stringify({
         name,
