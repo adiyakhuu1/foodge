@@ -21,6 +21,7 @@ export default function AddCategory() {
 
   const [name, setName] = useState<string>("");
   const [token, setToken] = useState<string>("");
+  const [newCategory, setNewCategory] = useState();
   const path = usePathname();
   const searchParams = useSearchParams();
   const handleClick = async () => {
@@ -35,7 +36,7 @@ export default function AddCategory() {
       }),
     });
     const response = await res.json();
-    console.log(response);
+    setNewCategory(response);
   };
   useEffect(() => {
     const dosomething = async () => {
@@ -80,7 +81,8 @@ export default function AddCategory() {
               className="bg-foreground text-background flex p-3 rounded-xl"
               onClick={() => {
                 handleClick();
-              }}>
+              }}
+            >
               Save Changes
             </Button>
           </DialogClose>

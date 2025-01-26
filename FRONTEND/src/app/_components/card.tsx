@@ -83,7 +83,7 @@ function Card({ categoryId, categoryName }: Props) {
       setAllCategory(categories);
     };
     fetchData();
-  }, [ref]);
+  }, []);
 
   const addnewitem = async () => {
     const recCate = await fetch(`http://localhost:5000/food`, {
@@ -147,7 +147,8 @@ function Card({ categoryId, categoryName }: Props) {
             setIngre("");
             setPrice(1);
           }}
-          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center">
+          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
+        >
           <div>
             <Image
               src={`/img/add-new-button.png`}
@@ -207,7 +208,8 @@ function Card({ categoryId, categoryName }: Props) {
                 addnewitem();
               }}
               href={`/admin?page=food+menu`}
-              className="bg-foreground px-5 p-2 text-secondary">
+              className="bg-foreground px-5 p-2 text-secondary"
+            >
               <div>Save</div>
             </Link>
           </DialogFooter>
@@ -217,7 +219,8 @@ function Card({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl">
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl"
+        >
           {/* edit dialog here */}
           <Dialog>
             <DialogTrigger
@@ -228,7 +231,8 @@ function Card({ categoryId, categoryName }: Props) {
                 setIngre(food.ingredients);
                 setPrice(food.price);
               }}
-              className="">
+              className=""
+            >
               <div>
                 <Image
                   className="absolute top-1/3 right-4 border border-border rounded-full shadow-lg"
@@ -267,7 +271,8 @@ function Card({ categoryId, categoryName }: Props) {
                       onChange={(e) => {
                         setEditCategory(e.target.value);
                         console.log(changeCategory);
-                      }}>
+                      }}
+                    >
                       {categories.map((cate) => (
                         <option
                           // onClick={() => {
@@ -276,7 +281,8 @@ function Card({ categoryId, categoryName }: Props) {
                           // }}
                           key={cate._id}
                           value={`${cate._id}`}
-                          className="text-foreground bg-background">
+                          className="text-foreground bg-background"
+                        >
                           {cate.name}
                         </option>
                       ))}
@@ -318,7 +324,8 @@ function Card({ categoryId, categoryName }: Props) {
                       deleteFood();
                     }}
                     href={`/admin?page=food+menu`}
-                    className=" px-5 p-2 text-foreground">
+                    className=" px-5 p-2 text-foreground"
+                  >
                     <MdDeleteForever className="text-red-600 text-3xl" />
                   </Link>
                 </DialogFooter>
@@ -328,7 +335,8 @@ function Card({ categoryId, categoryName }: Props) {
                       edititem();
                     }}
                     href={`/admin?page=food+menu`}
-                    className="bg-foreground px-5 p-2 text-secondary">
+                    className="bg-foreground px-5 p-2 text-secondary"
+                  >
                     Save
                   </Link>
                 </DialogFooter>

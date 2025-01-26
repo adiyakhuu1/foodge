@@ -12,14 +12,18 @@ export const FoodCategoryRouter = Router();
 const auth = async (req: customRequest, res: Response, next: NextFunction) => {
   const token = req.get("auth");
   if (token) {
-    const verified = await verifyToken(token, {
-      secretKey: process.env.CLERK_SECRET_KEY,
-    });
-    const userId = verified.sub;
-    console.log(userId);
+    try {
+      const verified = await verifyToken(token, {
+        secretKey: process.env.CLERK_SECRET_KEY,
+      });
+      req.userId = verified.sub;
+      console.log(req.userId);
 
-    next();
-    return;
+      next();
+      return;
+    } catch (e) {
+      console.log(e, "aldaa");
+    }
   }
   console.log("no");
 };

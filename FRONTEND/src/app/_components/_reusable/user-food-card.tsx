@@ -39,6 +39,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   const [chooseCate, setCategory] = useState<string>("");
   const [categories, setAllCategory] = useState<Dish[]>([]);
   const [selected, selectedFood] = useState({});
+  const [isDuplicate, setIsDuplicate] = useState(false);
 
   const [price, setPrice] = useState<number>(1);
   // edit states
@@ -88,7 +89,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl">
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl"
+        >
           {/* edit dialog here */}
           <Dialog>
             <DialogTrigger
@@ -103,7 +105,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                 console.log(order);
                 // selectedFood(food);
               }}
-              className="">
+              className=""
+            >
               <div>
                 <GoPlus className="absolute top-[40%] bg-background right-4 text-red-500 text-xs w-10 h-10 rounded-full shadow-lg" />
               </div>
@@ -148,7 +151,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         onClick={() => {
                           setCount((p) => p - 1);
                           console.log(count);
-                        }}>
+                        }}
+                      >
                         -
                       </Button>
                       {count}
@@ -157,7 +161,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         onClick={() => {
                           setCount((p) => p + 1);
                           console.log(count);
-                        }}>
+                        }}
+                      >
                         +
                       </Button>
                     </div>
@@ -182,7 +187,8 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                           ]);
                           console.log(order);
                         }}
-                        className="w-full rounded-lg bg-primary">
+                        className="w-full rounded-lg bg-primary"
+                      >
                         Add to cart
                       </Button>
                     </DialogClose>

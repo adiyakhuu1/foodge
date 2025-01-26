@@ -9,11 +9,15 @@ export const foodRouter = Router();
 const auth = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.get("auth");
   if (token) {
-    await verifyToken(token, {
-      secretKey: process.env.CLERK_SECRET_KEY,
-    });
-    next();
-    return;
+    try {
+      await verifyToken(token, {
+        secretKey: process.env.CLERK_SECRET_KEY,
+      });
+      next();
+      return;
+    } catch (e) {
+      console.error(e, "aldaa");
+    }
   }
   console.log("no");
   res.json({ message: "no" });
@@ -26,9 +30,10 @@ foodRouter.delete("/:_id", auth, async (req: Request, res: Response) => {
   const params = req.params;
   try {
     await food_model.findByIdAndDelete(params);
-    res.json({ message: "deleted" });
+    res.json({ message: "success" });
   } catch (err) {
     console.error("aldaa", err, "aldaa");
+    res.json({ message: "aldaa" });
   }
 });
 foodRouter.get("/:category", async (req: Request, res: Response) => {
@@ -49,13 +54,16 @@ foodRouter.get("/:foodId", async (req: Request, res: Response) => {
   const result = await food_model.find(params);
   res.json(result);
 });
-foodRouter.put("/:_id", auth, async (req: Request, res: Response) => {
+foodRouter.patch("/:_id", auth, async (req: Request, res: Response) => {
   const params = req.params;
   const body = req.body;
-
-  const newchange = await food_model.findByIdAndUpdate(params, body);
-  console.log(newchange);
-  res.json(newchange);
+  try {
+    const newchange = await food_model.findByIdAndUpdate(params, body);
+    res.json({ message: "success", newchange });
+  } catch (e) {
+    console.log(e, "aldaa");
+    res.json({ message: "aldaa" });
+  }
 });
 
 foodRouter.post("/", auth, async (req: Request, res: Response) => {
@@ -65,9 +73,9 @@ foodRouter.post("/", auth, async (req: Request, res: Response) => {
       res.json({ message: "aldaa" });
     }
     const newitem = await food_model.create(body);
-    //   console.log(newItem);
-    res.json(newitem);
+    res.json({ message: "success" });
   } catch (e) {
+    res.json({ message: "aldaa" });
     console.error(e, "aldaa");
   }
 });

@@ -57,7 +57,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
   // console.log(category);
   // const { category } = params;
   const [foods, setFoods] = useState<Food[]>([]);
-  // const [foodName, setFoodName] = useState<string>("");
+  const [responseFromBackend, setResponseFromBackend] = useState();
   // const [ingredients, setIngre] = useState<string>("");
   const [categories, setAllCategory] = useState<Dish[]>([]);
   const [image, setImage] = useState<string>("");
@@ -119,7 +119,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       setFoods(categorizedFoods);
     };
     fetchData();
-  }, [ref]);
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       const recCate = await fetch(`http://localhost:5000/foodCategory`, {
@@ -132,7 +132,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       setAllCategory(categories);
     };
     fetchData();
-  }, [ref]);
+  }, []);
 
   const addnewitem = async () => {
     const recCate = await fetch(`http://localhost:5000/food`, {
@@ -143,8 +143,11 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       },
       body: JSON.stringify(form),
     });
-    const response = recCate.json();
-    console.log(response);
+    const response = await recCate.json();
+    if (response.message !== "success") {
+      setAlerts((prev) => ({ ...prev, error: true }));
+      // console.log("code worked");
+    }
     refresh(ref + 1);
   };
 
@@ -156,13 +159,23 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
         auth: token,
       },
     });
-    const response = recCate.json();
-    console.log(response);
+    const response = await recCate.json();
+    if (response.message === "success") {
+      setAlerts({
+        ...alerts,
+        success: true,
+      });
+    } else {
+      setAlerts({
+        ...alerts,
+        error: true,
+      });
+    }
     refresh(ref + 1);
   };
   const edititem = async () => {
     const recCate = await fetch(`http://localhost:5000/food/${getFoodId}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         auth: token,
@@ -172,8 +185,13 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
         image,
       }),
     });
-    const response = recCate.json();
-    console.log(response);
+    const response = await recCate.json();
+    if (response.message !== "success") {
+      setAlerts({
+        ...alerts,
+        error: true,
+      });
+    }
     refresh(ref + 1);
   };
   const router = useRouter();
@@ -198,7 +216,7 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       );
       const response = await res.json();
       setImage(response.secure_url);
-      console.log(image);
+      console.log(response.secure_url);
     }
   };
 
@@ -242,7 +260,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
               category: categoryId,
             });
           }}
-          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center">
+          className="w-[270px] h-[300px] flex flex-col h-240px border border-border border-dashed border-red-500 items-center gap-2 p-4 bg-background rounded-3xl justify-center"
+        >
           <div>
             <Image
               src={`/img/add-new-button.png`}
@@ -314,17 +333,17 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                 onClick={(e) => {
                   if (!isValid()) {
                     e.preventDefault();
-                    setAlerts((prev) => ({ ...prev, error: true }));
                   } else {
                     addnewitem();
                     console.log(image);
-                    setAlerts((prev) => ({ ...prev, success: true }));
+
                     // handleReload();
                   }
                 }}
                 className={`bg-foreground px-5 p-2 text-secondary rounded-lg ${
                   !isValid() ? "opacity-50 cursor-not-allowed" : ""
-                }`}>
+                }`}
+              >
                 Save
               </Button>
             </DialogClose>
@@ -335,13 +354,15 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500">
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 p-4 bg-background rounded-3xl hover:border-red-500"
+        >
           {/* edit dialog here */}
 
           <Dialog>
             <DialogTrigger
               onClick={() => {
                 setFoodId(food._id);
+                setImage(food.image);
                 setForm({
                   foodName: food.foodName,
                   price: food.price,
@@ -349,7 +370,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                   category: food.category,
                 });
               }}
-              className="">
+              className=""
+            >
               <div>
                 <Image
                   className="absolute top-1/2 right-4 border border-border rounded-full shadow-lg"
@@ -390,7 +412,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       onChange={(e) => {
                         onChangeForm(e);
                         console.log(form);
-                      }}>
+                      }}
+                    >
                       {categories.map((cate) => (
                         <option
                           // onClick={() => {
@@ -399,7 +422,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                           // }}
                           key={cate._id}
                           value={`${cate._id}`}
-                          className="text-foreground bg-background">
+                          className="text-foreground bg-background"
+                        >
                           {cate.name}
                         </option>
                       ))}
@@ -434,12 +458,23 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
 
                 <div className="flex flex-col">
                   <label>Food image</label>
-                  <input
-                    name="image"
-                    type="file"
-                    className="h-40 border border-border"
-                    onChange={(e) => handleImage(e)}
-                  />
+                  {food.image ? (
+                    <div>
+                      <Image
+                        src={food.image}
+                        alt="foodpic"
+                        width={1000}
+                        height={1000}
+                      />
+                    </div>
+                  ) : (
+                    <input
+                      name="image"
+                      type="file"
+                      className="h-40 border border-border"
+                      onChange={(e) => handleImage(e)}
+                    />
+                  )}
                 </div>
               </div>
               <div className="flex justify-between">
@@ -449,7 +484,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       deleteFood();
                     }}
                     href={path + "?" + searchParams}
-                    className=" px-5 p-2 text-foreground">
+                    className=" px-5 p-2 text-foreground"
+                  >
                     <MdDeleteForever className="text-red-600 text-3xl" />
                   </Link>
                 </DialogFooter>
@@ -459,10 +495,6 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       onClick={(e) => {
                         if (!isValid()) {
                           e.preventDefault();
-                          setAlerts({
-                            ...alerts,
-                            error: true,
-                          });
                         } else {
                           edititem();
                           setAlerts({
@@ -474,7 +506,8 @@ export default function AdminCard({ categoryId, categoryName }: Props) {
                       }}
                       className={`px-5 bg-foreground p-2 text-secondary ${
                         !isValid && `cursor-not-allowed bg-muted`
-                      }`}>
+                      }`}
+                    >
                       Save
                     </Button>
                   </DialogClose>
