@@ -16,8 +16,10 @@ const auth = async (req: customRequest, res: Response, next: NextFunction) => {
       next();
       return;
     }
+    res.json("auth failed");
   } catch (e) {
     console.error(e, "aldaa");
+    return;
   }
 };
 foodOrderRouter.post("/", auth, async (req: customRequest, res: Response) => {
@@ -40,7 +42,7 @@ foodOrderRouter.get("/", async (req: Request, res: Response) => {
     console.log(e, "aldaa 2");
   }
 });
-foodOrderRouter.put("/:id", async (req: customRequest, res: Response) => {
+foodOrderRouter.put("/:id", auth, async (req: customRequest, res: Response) => {
   const body = req.body;
 
   console.log(req.params.id);

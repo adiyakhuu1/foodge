@@ -20,7 +20,7 @@ export type Order = {
   createdAt: Date;
 };
 
-export const columns: ColumnDef<Order>[] = [
+export const createColumn = (token: string): ColumnDef<Order>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -69,7 +69,11 @@ export const columns: ColumnDef<Order>[] = [
     cell: (event) => (
       <select
         defaultValue={event.cell.row.original.status}
-        className="p-2 rounded-full border text-foreground text-xs border-red-500 font-bold"
+        className={`p-2 rounded-full border bg-background text-foreground text-xs  font-bold ${
+          event.cell.row.original.status === "DELIVERED"
+            ? `border-green-500`
+            : `border-red-500`
+        }`}
         onChange={async (e) => {
           // const { getToken } = useAuth();
           // const token = await getToken();
@@ -78,7 +82,7 @@ export const columns: ColumnDef<Order>[] = [
             `http://localhost:5000/foodOrder/${event.cell.row.original._id}`,
             {
               method: "PUT",
-              headers: { "Content-Type": "application/json" },
+              headers: { auth: token, "Content-Type": "application/json" },
               body: JSON.stringify({
                 ...event.cell.row.original,
                 status: e.target.value,
@@ -87,7 +91,8 @@ export const columns: ColumnDef<Order>[] = [
           );
           const response = await send.json();
           console.log(event.cell.row, e.target.value);
-        }}>
+        }}
+      >
         <option value={`PENDING`}>PENDING</option>
         <option value={`CANCELLED`}>CANCELLED</option>
         <option value={`DELIVERED`}>DELIVERED</option>
