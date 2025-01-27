@@ -55,6 +55,10 @@ export default async function Tabs(props: Props) {
       console.log(error, "aldaa");
     }
   }
+  const res5 = await fetch(`http://localhost:5000/foodOrder`, {
+    method: "GET",
+  });
+  const reponse = await res5.json();
 
   if (page === `orders`) {
     return (
@@ -64,7 +68,9 @@ export default async function Tabs(props: Props) {
             <div className="h-19 flex bg-background justify-between">
               <div className="w-1/2 p-3">
                 <h1>Orders</h1>
-                <h4 className="text-muted-foreground">32 items</h4>
+                <h4 className="text-muted-foreground">
+                  {reponse && reponse.length} items
+                </h4>
               </div>
               <div className="w-1/2">
                 <div className="flex gap-4 p-3 justify-end">

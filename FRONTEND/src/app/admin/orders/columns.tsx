@@ -68,6 +68,7 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "status",
     cell: (event) => (
       <select
+        defaultValue={event.cell.row.original.status}
         className="p-2 rounded-full border text-foreground text-xs border-red-500 font-bold"
         onChange={async (e) => {
           // const { getToken } = useAuth();
@@ -87,7 +88,6 @@ export const columns: ColumnDef<Order>[] = [
           const response = await send.json();
           console.log(event.cell.row, e.target.value);
         }}>
-        <option>{event.cell.row.original.status}</option>
         <option value={`PENDING`}>PENDING</option>
         <option value={`CANCELLED`}>CANCELLED</option>
         <option value={`DELIVERED`}>DELIVERED</option>
