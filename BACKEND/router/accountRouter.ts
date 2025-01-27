@@ -28,7 +28,7 @@ accountRouter.post("/signup", async (req: Request, res: Response) => {
 accountRouter.post("/signin", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email && !password) {
-    res.status(400).json({ message: "email and pass required" });
+    res.status(400).json({ message: "email or pass required" });
     return;
   }
   const user = await account_model.findOne({ email });

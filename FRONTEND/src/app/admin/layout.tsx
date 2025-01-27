@@ -15,6 +15,7 @@ import {
 } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Pfp } from "../_components/_reusable/pfp";
+import { StatusProvider } from "../selectStatusContext";
 const inter = Montserrat({ subsets: ["latin"] });
 export default function RootLayout({
   children,
@@ -24,23 +25,25 @@ export default function RootLayout({
   const { user } = useClerk();
   return (
     <ClerkProvider>
-      <ThemeProvider>
-        {user?.publicMetadata.role === "admin" ? (
-          <Suspense>
-            <div>{children}</div>
-          </Suspense>
-        ) : (
-          <div>
-            <div className="flex flex-col items-center">
-              <div>Not an admin switch or sign in!</div>
+      <StatusProvider>
+        <ThemeProvider>
+          {user?.publicMetadata.role === "admin" ? (
+            <Suspense>
+              <div>{children}</div>
+            </Suspense>
+          ) : (
+            <div>
+              <div className="flex flex-col items-center">
+                <div>Not an admin switch or sign in!</div>
 
-              <div>
-                <Pfp />
+                <div>
+                  <Pfp />
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </ThemeProvider>
+          )}
+        </ThemeProvider>
+      </StatusProvider>
     </ClerkProvider>
     //
     //   <ThemeProvider>{children}</ThemeProvider>

@@ -25,7 +25,6 @@ foodOrderRouter.post("/", auth, async (req: customRequest, res: Response) => {
   try {
     const newOrder = await FoodOrder_model.create({
       ...body,
-      // user: req.userId,
     });
     res.json({ message: "success", newOrder });
   } catch (e) {
@@ -35,9 +34,22 @@ foodOrderRouter.post("/", auth, async (req: customRequest, res: Response) => {
 });
 foodOrderRouter.get("/", async (req: Request, res: Response) => {
   try {
-    const orders = await FoodOrder_model.find();
+    const orders = await FoodOrder_model.find().populate("user");
     res.json(orders);
   } catch (e) {
     console.log(e, "aldaa 2");
+  }
+});
+foodOrderRouter.put("/:id", async (req: customRequest, res: Response) => {
+  const body = req.body;
+
+  console.log(req.params.id);
+  try {
+    const Order = await FoodOrder_model.findByIdAndUpdate(req.params.id, body);
+    console.log("it worked", Order);
+    res.json({ message: "success", Order });
+  } catch (e) {
+    console.log(e, "aldaa 2");
+    res.json({ message: "aldaa" });
   }
 });

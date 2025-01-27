@@ -18,6 +18,7 @@ import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Pfp } from "./pfp";
 import { useCartContext } from "@/app/OrderContext";
 import { useFoodContext } from "@/app/FoodInfoContext";
+import { Alert } from "@/components/ui/alert";
 type Props = {
   categoryId: string;
   categoryName: string;
@@ -39,7 +40,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   const [chooseCate, setCategory] = useState<string>("");
   const [categories, setAllCategory] = useState<Dish[]>([]);
   const [selected, selectedFood] = useState({});
-  const [isDuplicate, setIsDuplicate] = useState(false);
+  const [alert, setAlert] = useState(false);
 
   const [price, setPrice] = useState<number>(1);
   // edit states
@@ -49,8 +50,15 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
   // const [order, setOrder] = useState<Order[]>([]);
   const [ref, refresh] = useState(0);
 
-  const handleSelectedFoods = () => {};
-  // let order = [];
+  useEffect(() => {
+    let interval = setTimeout(() => {
+      setAlert(false);
+    }, 5000);
+
+    return () => {
+      clearTimeout(interval);
+    };
+  }, [alert]);
   useEffect(() => {
     const fetchData = async () => {
       const recCate = await fetch(`http://localhost:5000/food/${categoryId}`, {
@@ -86,11 +94,15 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
 
   return (
     <>
+      {alert && (
+        <Alert className="fixed top-1/2 right-1/2 left-1/2 w-72 bg-foreground text-background z-[99] fade-in-100 fade-out-100">
+          <div>Хоол сагсанд дотор байна.</div>
+        </Alert>
+      )}
       {foods.map((food) => (
         <div
           key={food._id}
-          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl"
-        >
+          className="w-[270px] h-[300px] relative flex flex-col h-240px border border-border items-center gap-2 bg-background rounded-3xl">
           {/* edit dialog here */}
           <Dialog>
             <DialogTrigger
@@ -105,8 +117,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                 console.log(order);
                 // selectedFood(food);
               }}
-              className=""
-            >
+              className="">
               <div>
                 <GoPlus className="absolute top-[40%] bg-background right-4 text-red-500 text-xs w-10 h-10 rounded-full shadow-lg" />
               </div>
@@ -151,8 +162,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         onClick={() => {
                           setCount((p) => p - 1);
                           console.log(count);
-                        }}
-                      >
+                        }}>
                         -
                       </Button>
                       {count}
@@ -161,8 +171,7 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                         onClick={() => {
                           setCount((p) => p + 1);
                           console.log(count);
-                        }}
-                      >
+                        }}>
                         +
                       </Button>
                     </div>
@@ -171,24 +180,35 @@ export default function UserFoodCard({ categoryId, categoryName }: Props) {
                     <DialogClose asChild>
                       <Button
                         onClick={() => {
-                          setOrder([
-                            ...order,
-                            { food: food._id, quantity: count },
-                          ]);
-                          setFoodsInfo([
-                            ...foodsInfo,
-                            {
-                              _id: getFoodId,
-                              foodName: foodName,
-                              price: price,
-                              ingredients: ingredients,
-                              image: image,
-                            },
-                          ]);
+                          const exist = order.find((item) => {
+                            console.log("find", item.food);
+                            console.log("map", food._id);
+                            if (item.food === food._id) {
+                              setAlert(true);
+                              return item;
+                            } else {
+                            }
+                          });
+
+                          if (!exist) {
+                            setOrder([
+                              ...order,
+                              { food: food._id, quantity: count },
+                            ]);
+                            setFoodsInfo([
+                              ...foodsInfo,
+                              {
+                                _id: getFoodId,
+                                foodName: foodName,
+                                price: price,
+                                ingredients: ingredients,
+                                image: image,
+                              },
+                            ]);
+                          }
                           console.log(order);
                         }}
-                        className="w-full rounded-lg bg-primary"
-                      >
+                        className="w-full rounded-lg bg-primary">
                         Add to cart
                       </Button>
                     </DialogClose>
